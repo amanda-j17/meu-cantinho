@@ -106,6 +106,23 @@ nav button span{display:block;font-size:20px}nav button.a{background:var(--wood2
 a.btn{display:block;text-align:center;text-decoration:none}
 .gg{background:var(--paper);color:var(--ink);border-color:var(--ink)}
 .login{max-width:440px;margin:3vh auto 0}.login .scene svg{width:100%;height:auto;min-height:0}
+.sp{display:block;width:100%;border:0;border-radius:12px;margin-top:8px;background:var(--wood)}
+.song{display:flex;align-items:center;gap:12px;background:var(--wood);border:2px solid var(--mute);border-radius:12px;padding:10px;margin-top:8px;transition:box-shadow .3s,border-color .3s}
+.song.on{border-color:var(--lamp);box-shadow:0 0 16px rgba(242,181,68,.35)}
+.disc{position:relative;flex:none;width:64px;height:64px;border-radius:50%;border:3px solid var(--ink);padding:0;overflow:hidden;cursor:pointer;background:var(--ink)}
+.disc img{width:100%;height:100%;object-fit:cover;display:block}
+.disc::after{content:'▶';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-size:20px;background:rgba(18,11,6,.45)}
+.disc.on::after{content:'❚❚';font-size:14px}
+.disc.on img{animation:spin 5s linear infinite}
+.sinfo{min-width:0;flex:1}.sinfo b{display:block;font-size:14px;color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sinfo span{font-size:12px;color:var(--soft)}
+.eq{display:flex;gap:2px;align-items:flex-end;height:14px;margin-top:5px}.eq i{width:4px;height:3px;background:var(--lamp);border-radius:1px}
+.song.on .eq i{animation:eq .8s ease-in-out infinite alternate}.eq i:nth-child(2){animation-delay:-.3s}.eq i:nth-child(3){animation-delay:-.6s}.eq i:nth-child(4){animation-delay:-.15s}
+.pg{height:4px;background:var(--wood2);border-radius:2px;margin:6px 0;overflow:hidden}.pg i{display:block;height:100%;width:0;background:var(--lamp)}
+.sl{font-size:11px;color:var(--lamp)}
+.rs{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--mute)}.rs .disc{width:46px;height:46px}.rs .btn{padding:7px 10px;font-size:13px}
+.srch{display:grid;grid-template-columns:1fr auto;gap:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes eq{from{height:3px}to{height:14px}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -126,10 +143,20 @@ const MOODS=['😫','😕','😐','🙂','🤩'],LET=['D','S','T','Q','Q','S','S
 const pad=n=>String(n).padStart(2,'0'),key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const spId=u=>{const m=String(u||'').match(/open\.spotify\.com\/(?:intl-[a-z]+\/)?(track|album|playlist|episode|artist)\/([A-Za-z0-9]+)/);return m?m[1]+'/'+m[2]:null};
+const spEmbed=u=>{const i=spId(u);return i?`<iframe class="sp" src="https://open.spotify.com/embed/${i}" height="${/^(track|episode)/.test(i)?80:152}" loading="lazy" allow="encrypted-media" title="Spotify"></iframe>`:''};
+const AU=new Audio();let playing=null;
+function syncPlay(){document.querySelectorAll('[data-src]').forEach(el=>el.classList.toggle('on',el.dataset.src===playing));if(!playing)document.querySelectorAll('.pg i').forEach(i=>i.style.width='0')}
+AU.addEventListener('timeupdate',()=>{const p=AU.duration?AU.currentTime/AU.duration*100:0;document.querySelectorAll('.pg').forEach(el=>{el.firstElementChild.style.width=(el.dataset.src===playing?p:0)+'%'})});
+AU.addEventListener('ended',()=>{playing=null;syncPlay()});
+function togglePlay(src){if(playing===src){AU.pause();playing=null}else{AU.src=src;AU.play().catch(()=>{playing=null;syncPlay()});playing=src}syncPlay()}
+function itunes(q){return new Promise((ok,no)=>{const cb='itcb'+Date.now(),s=document.createElement('script'),end=()=>{clearTimeout(t);delete window[cb];s.remove()},t=setTimeout(()=>{end();no()},8000);window[cb]=d=>{end();ok(d.results||[])};s.onerror=()=>{end();no()};s.src='https://itunes.apple.com/search?media=music&entity=song&limit=8&country=BR&term='+encodeURIComponent(q)+'&callback='+cb;document.head.appendChild(s)})}
+const songCard=s=>`<div class="song" data-src="${esc(s.p)}"><button class="disc" data-act="play" data-src="${esc(s.p)}" aria-label="Tocar prévia de ${esc(s.t)}"><img src="${esc(s.i)}" alt=""></button><div class="sinfo"><b>${esc(s.t)}</b><span>${esc(s.a)}</span><div class="eq"><i></i><i></i><i></i><i></i></div><div class="pg" data-src="${esc(s.p)}"><i></i></div><a class="sl" target="_blank" rel="noopener" href="https://open.spotify.com/search/${encodeURIComponent(s.t+' '+s.a)}">ouvir inteira no Spotify ↗</a></div></div>`;
+function jResHtml(){return Array.isArray(jRes)&&jRes.length?jRes.map((s,i)=>`<div class="rs"><button class="disc" data-act="play" data-src="${esc(s.p)}" aria-label="Tocar prévia"><img src="${esc(s.i)}" alt=""></button><div class="sinfo"><b>${esc(s.t)}</b><span>${esc(s.a)}</span></div><button class="btn" data-act="pick" data-i="${i}">Escolher</button></div>`).join(''):(Array.isArray(jRes)&&jSq?'<p class="sm">Nada encontrado.</p>':'')}
 const wk=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
 const norm=d=>({habits:(d.habits||[]).map(h=>({goal:7,done:{},...h})),journal:d.journal||{},onboarded:!!d.onboarded||(d.habits||[]).length>0,t:d.t||0});
 function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||localStorage.getItem('meu-cantinho-v1'));if(d&&d.habits)return norm(d)}catch(e){}return norm({})}
-let D=loadLocal(),user=null,view='hoje',animNext=true,popKey=null,recovering=false,loginEmail='',editId=null,sumUrl=null,sumCanvas=null,hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
+let D=loadLocal(),user=null,view='hoje',animNext=true,popKey=null,recovering=false,loginEmail='',editId=null,sumUrl=null,sumCanvas=null,hmH='all',jDate=key(new Date()),jMood=null,jText=null,jSong=undefined,jRes=[],jSq='',syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
 
 function setSync(m){syncMsg=m;const el=$('#sync');if(el)el.textContent=m}
 function save(){D.t=Date.now();try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}if(cloud&&user){setSync('salvando…');clearTimeout(timer);timer=setTimeout(push,700)}}
@@ -162,6 +189,7 @@ const ACH=[
  ['💪','50 checks','50 marcações no total',()=>checks()>=50,'#C8302B'],
  ['🏆','200 checks','200 marcações no total',()=>checks()>=200,'#F2B544'],
  ['📓','Escritora','7 dias no diário',()=>Object.keys(D.journal).length>=7,'#7B4FA3'],
+ ['🎧','Trilha sonora','Música do dia em 5 dias do diário',()=>Object.values(D.journal).filter(e=>e.song||e.music).length>=5,'#C8302B'],
  ['🌻','Planta adulta','Uma planta no último estágio',()=>D.habits.some(h=>stage(h)===3),'#4F7A3A']];
 const light=c=>{const n=parseInt(c.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000)>150};
 
@@ -203,9 +231,9 @@ function vMes(){const now=new Date(),hs=D.habits;if(!hs.length)return'<div class
   return`<div class="stats"><div class="stat"><b>${Math.max(...hs.map(best))}</b>melhor sequência (dias)</div><div class="stat"><b>${mc}</b>checks neste mês</div><div class="stat"><b>${exp?Math.round(got/exp*100):0}%</b>meta desta semana</div><div class="stat"><b>${perfect()}</b>dias perfeitos</div></div>
   <div class="r2" style="margin-top:12px"><button class="btn" data-act="sum" data-k="w">Resumo da semana</button><button class="btn" data-act="sum" data-k="m">Resumo do mês</button></div><h2>calendário de calor</h2><label style="margin-bottom:8px">Mostrar<select id="hmsel"><option value="all">Todos os hábitos</option>${hs.map(h=>`<option value="${h.id}" ${h.id===hmH?'selected':''}>${esc(h.name)}</option>`).join('')}</select></label><div class="hm">${cols}</div>
   <h2>últimas 8 semanas</h2><div class="bars">${bars}</div>`}
-function vDiario(){const cur=D.journal[jDate],m=jMood??(cur?cur.mood:null),tx=jText??(cur?cur.text:'');
-  return`<div class="box f"><div class="sm">${jDate===key(new Date())?'Como foi o dia?':'Editando o dia'} (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><button class="btn" data-act="jsave">Salvar dia</button>${jDate!==key(new Date())?'<button class="btn g" data-act="jtoday">Voltar pra hoje</button>':''}</div>
-  <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}<div class="ea"><button data-act="jedit" data-d="${k}">editar</button><button data-act="jdel" data-d="${k}">excluir</button></div></div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
+function vDiario(){const cur=D.journal[jDate],m=jMood??(cur?cur.mood:null),tx=jText??(cur?cur.text:''),sg=jSong===undefined?(cur?cur.song:null):jSong;
+  return`<div class="box f"><div class="sm">${jDate===key(new Date())?'Como foi o dia?':'Editando o dia'} (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><div class="sm">🎧 Música do dia (opcional)</div>${sg?songCard(sg)+'<button class="btn g" data-act="srm">Trocar música</button>':`<div class="srch"><input id="jsq" type="search" placeholder="Nome da música ou artista" value="${esc(jSq)}"><button class="btn" data-act="sfind">Buscar</button></div><div id="jres">${jResHtml()}</div>`}<button class="btn" data-act="jsave">Salvar dia</button>${jDate!==key(new Date())?'<button class="btn g" data-act="jtoday">Voltar pra hoje</button>':''}</div>
+  <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}${D.journal[k].song?songCard(D.journal[k].song):''}${spEmbed(D.journal[k].music)}<div class="ea"><button data-act="jedit" data-d="${k}">editar</button><button data-act="jdel" data-d="${k}">excluir</button></div></div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
 function vConq(){const u=ACH.filter(a=>a[3]()).length;return`<p class="sm">${u} de ${ACH.length} adesivos colados.</p><div class="ach">${ACH.map((a,i)=>{const ok=a[3]();return ok?`<div class="a1 ${light(a[4])?'l':''}" style="--c:${a[4]};--r:${i%2?2:-2}deg"><em>${a[0]}</em><b>${a[1]}</b><span>${a[2]}</span></div>`:`<div class="a1 x"><em>?</em><b>${a[1]}</b><span>${a[2]}</span></div>`}).join('')}</div>`}
 
 const back=()=>location.href.split('#')[0].split('?')[0];
@@ -228,7 +256,7 @@ let ob=null,obTour=false,obPick=[true,true,true,false,false,false];
 function ovTut(){const st=(obTour?[0,2]:[0,1,2])[ob],last=ob===(obTour?1:2);let b='';
   if(st===0)b=`<div style="font-size:56px;text-align:center">😺</div><h2 style="margin:0;text-align:center">bem-vinda ao seu cantinho</h2><p>Aqui seus hábitos viram plantinhas numa sacada com luz amarela. Quanto mais você cuida, mais elas crescem, e o gato aprova.</p>`;
   else if(st===1)b=`<h2 style="margin:0">planta os primeiros hábitos</h2><p class="sm">Escolha os que quiser. Dá pra mudar tudo depois.</p>${STARTERS.map((x,i)=>`<label class="chk"><input type="checkbox" class="pk" data-i="${i}" ${obPick[i]?'checked':''}> ${x[0]} <span class="sm">${x[3]===7?'todo dia':x[3]+'x por semana'}</span></label>`).join('')}`;
-  else b=`<h2 style="margin:0">como funciona</h2><p>🌱 Toque em <b>marcar hoje</b> todo dia que cumprir um hábito.<br>🪴 As plantas crescem no <b>Jardim</b>.<br>🏷️ Sequências rendem <b>adesivos</b>.<br>✏️ No <b>Diário</b> você registra o humor do dia.<br>☁️ Tudo fica salvo na sua conta.</p>`;
+  else b=`<h2 style="margin:0">como funciona</h2><p>🌱 Toque em <b>marcar hoje</b> todo dia que cumprir um hábito.<br>🪴 As plantas crescem no <b>Jardim</b>.<br>🏷️ Sequências rendem <b>adesivos</b>.<br>✏️ No <b>Diário</b> você registra o humor do dia e a música que tocou.<br>☁️ Tudo fica salvo na sua conta.</p>`;
   return`<div class="ov"><div class="mod box f">${b}<div class="r2">${ob>0?'<button class="btn g" data-act="obback">Voltar</button>':''}<button class="btn" data-act="obnext">${last?'Começar':'Próximo'}</button></div><a href="#" data-act="obskip" class="sm" style="text-align:center;color:var(--soft)">Pular tutorial</a></div></div>`}
 function finishOb(){if(!obTour)STARTERS.forEach((x,i)=>{if(obPick[i])D.habits.push({id:'h'+Date.now().toString(36)+i,name:x[0],type:x[1],color:x[2],goal:x[3],done:{}})});D.onboarded=true;ob=null;obTour=false;save();animNext=true;render()}
 function exportData(){const b=new Blob([JSON.stringify(D,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cantinho-backup-'+key(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
@@ -253,7 +281,7 @@ function render(){$('#app').className=animNext?'enter':'';animNext=false;if(reco
   tabs=[['hoje','☀️','Hoje'],['jardim','🪴','Jardim'],['mes','📅','Mês'],['diario','✏️','Diário'],['conq','🏷️','Adesivos']];
   $('#app').innerHTML=`<header><div><h1>meu cantinho</h1><div class="sm">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pill"><b>${c[0]}</b><div>${c[1]}<div class="xp" title="${x} XP">${Array.from({length:10},(_,i)=>`<i class="${i<fill?'f':''}" style="--k:${i}"></i>`).join('')}</div><span class="sm">nível ${lv}</span></div></div></header>${V}
   <p class="sm" style="margin-top:22px"><span id="sync">${cloud?(user?esc(syncMsg||'salvo na nuvem ✓'):'só neste aparelho'):'modo local (sem nuvem configurada)'}</span> ${cloud&&user?`· ${esc(user.email)} <a href="#" data-act="out" style="color:var(--lamp)">sair</a>`:''}${cloud&&!user?' · <a href="#" data-act="login" style="color:var(--lamp)">entrar</a>':''}</p>
-  <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>${editId?ovEdit():''}${ob!==null?ovTut():''}${sumUrl?ovSum():''}`}
+  <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>${editId?ovEdit():''}${ob!==null?ovTut():''}${sumUrl?ovSum():''}`;syncPlay()}
 
 async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value;loginEmail=email;if(!email||password.length<6){loginMsg='Preencha o e-mail e uma senha de 6+ caracteres.';return render()}
   const r=m==='in'?await cloud.auth.signInWithPassword({email,password}):await cloud.auth.signUp({email,password});
@@ -261,14 +289,20 @@ async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value
   if(m==='up'&&!r.data.session){loginMsg='Conta criada. Confirme o e-mail que você recebeu e depois entre.';render()}}
 
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;if(b.tagName==='A')e.preventDefault();
-  if(a==='tab'){view=b.dataset.v;animNext=true;render()}
+  if(a==='tab'){AU.pause();playing=null;view=b.dataset.v;animNext=true;render()}
   else if(a==='day')toggle(b.dataset.id,b.dataset.k)
   else if(a==='del'){const h=D.habits.find(x=>x.id===b.dataset.id);if(h&&confirm('Apagar "'+h.name+'" e todo o histórico?')){D.habits=D.habits.filter(x=>x!==h);save();render()}}
   else if(a==='mood'){jText=$('#jt').value;jMood=+b.dataset.m;render()}
-  else if(a==='jsave'){D.journal[jDate]={mood:jMood??(D.journal[jDate]?D.journal[jDate].mood:2),text:$('#jt').value.trim()};jDate=key(new Date());jMood=null;jText=null;save();render()}
-  else if(a==='jedit'){jDate=b.dataset.d;jMood=null;jText=null;render();scrollTo({top:0,behavior:'smooth'})}
-  else if(a==='jdel'){const d=b.dataset.d;if(confirm('Apagar a nota do dia '+d.split('-').reverse().join('/')+'?')){delete D.journal[d];if(jDate===d){jMood=null;jText=null}save();render()}}
-  else if(a==='jtoday'){jDate=key(new Date());jMood=null;jText=null;render()}
+  else if(a==='jsave'){const o=D.journal[jDate]||{},sg=jSong===undefined?o.song:jSong;D.journal[jDate]={mood:jMood??(o.mood??2),text:$('#jt').value.trim(),...(sg?{song:sg}:{}),...(o.music?{music:o.music}:{})};jDate=key(new Date());jMood=null;jText=null;jSong=undefined;jRes=[];jSq='';save();render()}
+  else if(a==='jedit'){jDate=b.dataset.d;jMood=null;jText=null;jSong=undefined;render();scrollTo({top:0,behavior:'smooth'})}
+  else if(a==='jdel'){const d=b.dataset.d;if(confirm('Apagar a nota do dia '+d.split('-').reverse().join('/')+'?')){delete D.journal[d];if(jDate===d){jMood=null;jText=null;jSong=undefined}save();render()}}
+  else if(a==='jtoday'){jDate=key(new Date());jMood=null;jText=null;jSong=undefined;render()}
+  else if(a==='play')togglePlay(b.dataset.src)
+  else if(a==='pick'){const sg=jRes[+b.dataset.i];if(sg){jText=$('#jt').value;jSong=sg;jRes=[];jSq='';render()}}
+  else if(a==='srm'){jText=$('#jt').value;jSong=null;render()}
+  else if(a==='sfind'){const q=$('#jsq').value.trim();if(!q)return;jSq=q;jRes=null;$('#jres').innerHTML='<p class="sm">buscando…</p>';
+    try{const r=await itunes(q);jRes=r.filter(x=>x.previewUrl).map(x=>({t:x.trackName,a:x.artistName,i:(x.artworkUrl100||'').replace('100x100','300x300'),p:x.previewUrl}))}catch(err){jRes=[];$('#jres').innerHTML='<p class="err">Não consegui buscar agora. Tenta de novo.</p>';return}
+    $('#jres').innerHTML=jResHtml()}
   else if(a==='in'||a==='up')auth(a)
   else if(a==='google')google()
   else if(a==='forgot')forgot()
@@ -290,6 +324,7 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='out'){await cloud.auth.signOut();user=null;localOnly=false;localStorage.removeItem('cantinho-local');localStorage.removeItem(LS);D=norm({});render()}});
 document.addEventListener('submit',e=>{if(e.target.id!=='nf')return;e.preventDefault();const n=$('#fn').value.trim();if(!n)return;
   D.habits.push({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,type:$('#ft').value,color:$('#fc').value,goal:+$('#fg').value,done:{}});save();render()});
+document.addEventListener('keydown',e=>{if(e.target.id==='jsq'&&e.key==='Enter'){e.preventDefault();const b=document.querySelector('[data-act="sfind"]');if(b)b.click()}});
 document.addEventListener('change',e=>{const t=e.target;if(t.id==='hmsel'){hmH=t.value;render()}
   if(t.classList.contains('pk'))obPick[+t.dataset.i]=t.checked;
   if(t.id==='imp'&&t.files[0]){const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!Array.isArray(o.habits))throw 0;if(confirm('Substituir seus dados atuais pelo backup?')){D=norm(o);D.onboarded=true;save();animNext=true;render()}}catch(x){alert('Esse arquivo não parece um backup do cantinho.')}t.value=''};rd.readAsText(t.files[0])}});
