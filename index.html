@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#2B1D14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>meu cantinho</title>
+<style>
+:root{--wood:#2B1D14;--wood2:#3A2819;--lamp:#F2B544;--tat:#C8302B;--leaf:#4F7A3A;--paper:#F5E6C8;--paper2:#E3D0A8;--ink:#120b06;--soft:#D9C7A3;--mute:#6B4F33}
+*{box-sizing:border-box}
+body{margin:0;background:var(--wood);color:var(--paper);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top)) 14px 96px}
+#app{max-width:880px;margin:0 auto}
+button,input,select,textarea{font:inherit}
+header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+h1{margin:0;font-size:28px;color:var(--lamp)}
+h2{font-size:19px;color:var(--lamp);margin:22px 0 10px}
+.sm{font-size:12px;color:var(--soft)}
+.pill{background:var(--wood2);border:2px solid var(--lamp);border-radius:10px;padding:6px 12px;display:flex;align-items:center;gap:10px;font-size:14px}
+.pill b{font-size:26px;font-weight:400;line-height:1}
+.xp{display:flex;gap:2px;margin-top:3px}.xp i{width:9px;height:9px;background:var(--wood);border:1px solid var(--mute)}.xp i.f{background:var(--lamp)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.card{background:var(--paper);color:var(--wood);border:2px solid var(--ink);border-radius:12px;padding:14px;box-shadow:4px 4px 0 var(--ink)}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:10px}.top>div:nth-child(2){flex:1;min-width:0}
+.pl{width:50px;height:50px;border-radius:50%;background:var(--c);border:2px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:27px}
+.nm{font-weight:700;font-size:17px;overflow-wrap:anywhere}.sb{font-size:12px;color:var(--mute)}
+.del{background:none;border:0;color:var(--mute);font-size:20px;cursor:pointer}.del:hover{color:var(--tat)}
+.wk{display:flex;gap:4px}.dy{flex:1;text-align:center;font-size:11px;color:var(--mute)}
+.blk{display:block;width:100%;height:24px;margin-bottom:3px;background:var(--paper2);border:2px solid var(--ink);cursor:pointer;padding:0}
+.blk.on{background:var(--c)}.blk.td{outline:2px dashed var(--ink);outline-offset:2px}
+.st{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);margin:6px 0 10px}
+.ck{width:100%;font-weight:700;padding:10px;border-radius:8px;border:2px solid var(--ink);background:var(--lamp);color:var(--ink);cursor:pointer}
+.ck.d{background:var(--leaf);color:var(--paper)}.ck:active,.btn:active{transform:translate(2px,2px)}
+:focus-visible{outline:3px solid var(--lamp);outline-offset:2px}
+.box{background:var(--wood2);border:2px solid var(--mute);border-radius:12px;padding:14px}
+form,.f{display:grid;gap:10px}
+label{font-size:13px;color:var(--soft);display:grid;gap:4px}
+input,select,textarea{font-size:16px;padding:10px;border-radius:8px;border:2px solid var(--ink);background:var(--paper);color:var(--wood);width:100%}
+.btn{font-weight:700;padding:11px;border-radius:8px;border:2px solid var(--paper);background:var(--tat);color:var(--paper);cursor:pointer}
+.btn.g{background:none;color:var(--soft);border-color:var(--mute)}
+.r2{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--ink);border-top:2px solid var(--mute);display:flex;justify-content:center;padding:6px 6px max(6px,env(safe-area-inset-bottom));gap:4px;z-index:5}
+nav button{flex:1;max-width:120px;background:none;border:0;color:var(--soft);padding:6px 2px;font-size:12px;cursor:pointer;border-radius:8px}
+nav button span{display:block;font-size:20px}nav button.a{background:var(--wood2);color:var(--lamp)}
+.scene{overflow-x:auto;border:2px solid var(--ink);border-radius:12px;background:#2f2016}.scene svg{display:block;min-height:260px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stat{background:var(--wood2);border:2px solid var(--mute);border-radius:10px;padding:10px}.stat b{display:block;font-size:26px;color:var(--lamp)}
+.hm{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,16px);gap:3px;overflow-x:auto;padding-bottom:4px}.hm i{width:16px;height:16px;border-radius:3px}
+.bars{display:flex;gap:8px;align-items:flex-end;height:110px}.bar{flex:1;text-align:center;font-size:11px;color:var(--soft);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.bar i{display:block;background:var(--lamp);border:2px solid var(--ink);min-height:3px}
+.moods{display:flex;gap:8px}.moods button{flex:1;font-size:26px;padding:8px;border-radius:10px;border:2px solid var(--mute);background:var(--wood2);cursor:pointer}.moods button.a{border-color:var(--lamp);background:var(--mute)}
+.ent{padding:10px 0;border-bottom:1px dashed var(--mute);font-size:14px}
+.ach{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.a1{border:2px solid var(--paper);border-radius:10px;padding:12px;background:var(--c);color:var(--paper);transform:rotate(var(--r))}
+.a1.l{color:var(--ink);border-color:var(--ink)}.a1.x{background:none;border:2px dashed var(--mute);color:var(--soft);transform:none}
+.a1 b{display:block;font-size:15px}.a1 span{font-size:12px}.a1 em{font-size:26px;font-style:normal}
+.err{color:#F09595;font-size:14px;min-height:20px}
+.login{max-width:380px;margin:8vh auto 0}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SUPABASE_URL='https://icshvbqyvxhoynzankdr.supabase.co';
+const SUPABASE_KEY='sb_publishable_KLhpQfvTFm0g3z8vLcmfAg_Vtlom3cf';
+const cloud=(window.supabase&&!SUPABASE_URL.startsWith('COLE'))?supabase.createClient(SUPABASE_URL,SUPABASE_KEY):null;
+const LS='meu-cantinho-v2',$=s=>document.querySelector(s);
+const TYPES={samambaia:['🌱','🌿','🪴','🌳'],cacto:['🌱','🌵','🌵','🌸'],girassol:['🌱','🌿','🌻','🌻'],flor:['🌱','🌷','🌹','🌺']};
+const MOODS=['😫','😕','😐','🙂','🤩'],LET=['D','S','T','Q','Q','S','S'];
+const pad=n=>String(n).padStart(2,'0'),key=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const wk=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+const norm=d=>({habits:(d.habits||[]).map(h=>({goal:7,done:{},...h})),journal:d.journal||{},t:d.t||0});
+function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||localStorage.getItem('meu-cantinho-v1'));if(d&&d.habits)return norm(d)}catch(e){}return norm({})}
+let D=loadLocal(),user=null,view='hoje',hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
+
+function setSync(m){syncMsg=m;const el=$('#sync');if(el)el.textContent=m}
+function save(){D.t=Date.now();try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}if(cloud&&user){setSync('salvando…');clearTimeout(timer);timer=setTimeout(push,700)}}
+async function push(){const{error}=await cloud.from('cantinho').upsert({user_id:user.id,data:D,updated_at:new Date().toISOString()});setSync(error?'sem conexão, salvo no aparelho':'salvo na nuvem ✓')}
+async function pull(){const{data,error}=await cloud.from('cantinho').select('data').eq('user_id',user.id).maybeSingle();if(error){setSync('erro ao carregar');return}
+  if(data&&data.data){if((data.data.t||0)>=D.t){D=norm(data.data);try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}setSync('salvo na nuvem ✓')}else await push()}else await push()}
+
+const total=h=>Object.keys(h.done).length,level=h=>1+Math.floor(total(h)/7),stage=h=>{const t=total(h);return t<3?0:t<14?1:t<35?2:3};
+const wc=(h,ws)=>{let n=0;for(let i=0;i<7;i++)if(h.done[key(addDays(ws,i))])n++;return n};
+function streak(h){if(h.goal>=7){let d=new Date();if(!h.done[key(d)])d=addDays(d,-1);let n=0;while(h.done[key(d)]){n++;d=addDays(d,-1)}return n}
+  let ws=wk(new Date()),n=0;if(wc(h,ws)<h.goal)ws=addDays(ws,-7);while(n<520&&wc(h,ws)>=h.goal){n++;ws=addDays(ws,-7)}return n}
+function best(h){let b=0,c=0,p=null;for(const k of Object.keys(h.done).sort()){const d=new Date(k+'T00:00:00');c=p&&Math.round((d-p)/864e5)===1?c+1:1;if(c>b)b=c;p=d}return b}
+const checks=()=>D.habits.reduce((a,h)=>a+total(h),0);
+function perfect(){if(D.habits.length<2)return 0;const s=new Set();D.habits.forEach(h=>Object.keys(h.done).forEach(k=>s.add(k)));let n=0;s.forEach(k=>{if(D.habits.every(h=>h.done[k]))n++});return n}
+const xp=()=>checks()*10+Object.keys(D.journal).length*5;
+
+function toggle(id,k){const h=D.habits.find(x=>x.id===id);if(!h)return;if(h.done[k])delete h.done[k];else h.done[k]=1;save();render()}
+function catState(){const hs=D.habits;if(!hs.length)return['😺','esperando seu primeiro hábito'];const k=key(new Date()),n=hs.filter(h=>h.done[k]).length;
+  if(n===hs.length)return['😻','tudo feito, o gato aprova'];if(n>0)return['😺','tá indo bem, falta pouco'];return new Date().getHours()<17?['😴','dormindo na rede']:['😾','o gato tá de olho em você']}
+
+const ACH=[
+ ['🌱','Primeira vez','Marque seu primeiro check',()=>checks()>=1,'#4F7A3A'],
+ ['🔥','Semana cheia','7 dias seguidos em um hábito',()=>D.habits.some(h=>best(h)>=7),'#C8302B'],
+ ['⚡','Mês de ferro','30 dias seguidos',()=>D.habits.some(h=>best(h)>=30),'#F2B544'],
+ ['👑','Cem dias','100 dias seguidos',()=>D.habits.some(h=>best(h)>=100),'#7B4FA3'],
+ ['✨','Dia perfeito','Todos os hábitos num dia (2+ hábitos)',()=>perfect()>=1,'#F2B544'],
+ ['🌈','Cinco perfeitos','5 dias perfeitos',()=>perfect()>=5,'#7B4FA3'],
+ ['🪴','Jardineira','Ter 5 hábitos plantados',()=>D.habits.length>=5,'#4F7A3A'],
+ ['💪','50 checks','50 marcações no total',()=>checks()>=50,'#C8302B'],
+ ['🏆','200 checks','200 marcações no total',()=>checks()>=200,'#F2B544'],
+ ['📓','Escritora','7 dias no diário',()=>Object.keys(D.journal).length>=7,'#7B4FA3'],
+ ['🌻','Planta adulta','Uma planta no último estágio',()=>D.habits.some(h=>stage(h)===3),'#4F7A3A']];
+const light=c=>{const n=parseInt(c.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000)>150};
+
+function flower(x,y,c,r){let s='';for(let i=0;i<6;i++){const a=i*Math.PI/3;s+=`<circle cx="${x+Math.cos(a)*r*.9}" cy="${y+Math.sin(a)*r*.9}" r="${r*.6}" fill="${c}" stroke="#120b06" stroke-width="1.5"/>`}return s+`<circle cx="${x}" cy="${y}" r="${r*.55}" fill="#6B4F33" stroke="#120b06" stroke-width="1.5"/>`}
+function plant(h,x,y){const st=stage(h),g='#4F7A3A',t=h.type;let s='';
+  if(t==='cacto'){const H=[24,42,60,76][st];s+=`<rect x="${x-11}" y="${y-H}" width="22" height="${H}" rx="11" fill="${g}" stroke="#120b06" stroke-width="2"/>`;
+    if(st>=1)s+=`<rect x="${x-26}" y="${y-H*.65}" width="12" height="${H*.32}" rx="6" fill="${g}" stroke="#120b06" stroke-width="2"/>`;
+    if(st>=2)s+=`<rect x="${x+14}" y="${y-H*.78}" width="12" height="${H*.34}" rx="6" fill="${g}" stroke="#120b06" stroke-width="2"/>`;
+    if(st>=3)s+=flower(x,y-H-4,'#ED93B1',7)}
+  else{const H=[18,42,70,98][st],n=[2,4,6,8][st];s+=`<line x1="${x}" y1="${y}" x2="${x}" y2="${y-H}" stroke="#120b06" stroke-width="6" stroke-linecap="round"/><line x1="${x}" y1="${y}" x2="${x}" y2="${y-H}" stroke="${g}" stroke-width="3" stroke-linecap="round"/>`;
+    for(let i=0;i<n;i++){const sd=i%2?1:-1,ly=y-H*(.25+.65*i/n),L=t==='samambaia'?18:12;s+=`<ellipse cx="${x+sd*L}" cy="${ly}" rx="${L}" ry="6" transform="rotate(${sd*-25} ${x+sd*L} ${ly})" fill="#6FA050" stroke="#120b06" stroke-width="1.5"/>`}
+    if(st===3&&t==='girassol')s+=flower(x,y-H-8,'#F2B544',16);if(st===3&&t==='flor')s+=flower(x,y-H-6,'#ED93B1',12);
+    if(st===2&&t!=='samambaia')s+=`<circle cx="${x}" cy="${y-H-4}" r="6" fill="${t==='girassol'?'#F2B544':'#ED93B1'}" stroke="#120b06" stroke-width="1.5"/>`}
+  return s+`<path d="M${x-26} ${y} L${x+26} ${y} L${x+19} ${y+30} L${x-19} ${y+30} Z" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/><rect x="${x-29}" y="${y-5}" width="58" height="9" rx="2" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/>`}
+function scene(){const n=D.habits.length,W=Math.max(560,n*100+280),sleep=catState()[0]==='😴'||catState()[0]==='😺';let s=`<svg viewBox="0 0 ${W} 280" width="${W}" role="img" aria-label="Seu jardim na sacada"><rect width="${W}" height="280" fill="#2f2016"/>`;
+  s+=`<path d="M0 30 Q${W/2} 70 ${W} 30" fill="none" stroke="#6B4F33" stroke-width="2"/>`;
+  for(let i=1;i<14;i++){const t=i/14,x=W*t,y=30+80*t*(1-t)*.5*2;s+=`<circle cx="${x}" cy="${y+4}" r="16" fill="#F2B544" opacity=".13"/><circle cx="${x}" cy="${y+4}" r="5" fill="#F2B544" stroke="#120b06" stroke-width="1.5"/>`}
+  s+=`<rect x="0" y="235" width="${W}" height="16" fill="#5a3b22" stroke="#120b06" stroke-width="2"/><rect x="0" y="251" width="${W}" height="29" fill="#241811"/>`;
+  D.habits.forEach((h,i)=>{const x=60+i*100;s+=plant(h,x,205)+`<text x="${x}" y="270" text-anchor="middle" font-size="12" fill="#D9C7A3">${esc(h.name.slice(0,13))}</text>`});
+  const cx=W-130;s+=`<line x1="${cx-90}" y1="110" x2="${cx-90}" y2="235" stroke="#6B4F33" stroke-width="5"/><line x1="${cx+80}" y1="110" x2="${cx+80}" y2="235" stroke="#6B4F33" stroke-width="5"/>`;
+  s+=`<path d="M${cx-90} 150 Q${cx-5} 250 ${cx+80} 150" fill="#7a5a3a" stroke="#120b06" stroke-width="2.5"/>`;
+  s+=`<path d="M${cx+30} 196 Q${cx+62} 190 ${cx+55} 168" fill="none" stroke="#E08A3C" stroke-width="7" stroke-linecap="round"/><ellipse cx="${cx-8}" cy="190" rx="38" ry="17" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><circle cx="${cx-42}" cy="184" r="15" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><path d="M${cx-54} 174 L${cx-52} 160 L${cx-44} 171 Z M${cx-36} 171 L${cx-30} 160 L${cx-29} 175 Z" fill="#E08A3C" stroke="#120b06" stroke-width="2"/>`;
+  s+=sleep?`<path d="M${cx-49} 184 q3 3 6 0 M${cx-39} 184 q3 3 6 0" stroke="#120b06" stroke-width="2" fill="none"/>`:`<circle cx="${cx-46}" cy="183" r="2.5" fill="#120b06"/><circle cx="${cx-36}" cy="183" r="2.5" fill="#120b06"/>`;
+  return s+'</svg>'}
+
+function vLogin(){return`<div class="login box"><h1>meu cantinho</h1><p class="sm">Entre pra seus hábitos ficarem salvos e aparecerem no PC e no celular.</p><div class="f"><label>E-mail<input id="em" type="email" autocomplete="email"></label><label>Senha (mínimo 6 caracteres)<input id="pw" type="password" autocomplete="current-password"></label><div class="err" id="err">${esc(loginMsg)}</div><button class="btn" data-act="in">Entrar</button><button class="btn g" data-act="up">Criar conta</button><button class="btn g" data-act="local">Usar só neste aparelho</button></div></div>`}
+function card(h){const now=new Date(),tk=key(now),days=[];for(let i=6;i>=0;i--)days.push(addDays(now,-i));const done=!!h.done[tk],s=streak(h),w=wc(h,wk(now));
+  return`<article class="card" style="--c:${h.color}"><div class="top"><div class="pl">${TYPES[h.type][stage(h)]}</div><div><div class="nm">${esc(h.name)}</div><div class="sb">${h.type}, nível ${level(h)}${h.goal<7?' · meta '+h.goal+'x/semana':''}</div></div><button class="del" data-act="del" data-id="${h.id}" aria-label="Apagar ${esc(h.name)}">×</button></div>
+  <div class="wk">${days.map((d,i)=>{const k=key(d);return`<div class="dy"><button class="blk ${h.done[k]?'on':''} ${i===6?'td':''}" data-act="day" data-id="${h.id}" data-k="${k}" aria-label="${esc(h.name)} ${k}"></button>${LET[d.getDay()]}</div>`}).join('')}</div>
+  <div class="st"><span>${s?s+' '+(h.goal>=7?(s===1?'dia':'dias'):(s===1?'semana':'semanas'))+' seguidos':'sem sequência'}</span><span>${h.goal<7?w+'/'+h.goal+' na semana · ':''}${total(h)} no total</span></div>
+  <button class="ck ${done?'d':''}" data-act="day" data-id="${h.id}" data-k="${tk}">${done?'feito hoje ✓':'marcar hoje'}</button></article>`}
+function vHoje(){return(D.habits.length?`<div class="grid">${D.habits.map(card).join('')}</div>`:`<div class="box">Seu cantinho tá vazio. Planta o primeiro hábito logo abaixo.</div>`)+`<h2>novo hábito</h2><form id="nf" class="box"><label>Nome<input id="fn" maxlength="40" placeholder="Beber 2 litros de água" required></label><div class="r2"><label>Planta<select id="ft"><option value="samambaia">Samambaia</option><option value="cacto">Cacto</option><option value="girassol">Girassol</option><option value="flor">Flor</option></select></label><label>Cor<select id="fc"><option value="#4F7A3A">Verde folha</option><option value="#C8302B">Vermelho tattoo</option><option value="#F2B544">Amarelo luz</option><option value="#7B4FA3">Roxo</option></select></label><label>Meta<select id="fg"><option value="7">Todo dia</option><option value="6">6x por semana</option><option value="5">5x por semana</option><option value="4">4x por semana</option><option value="3">3x por semana</option><option value="2">2x por semana</option><option value="1">1x por semana</option></select></label></div><button class="btn" type="submit">Plantar hábito</button></form>`}
+function vJardim(){const c=catState();return`<div class="scene">${scene()}</div><p class="sm">As plantas crescem com os checks: broto, jovem, adulta e florida. Role pro lado se tiver muitos hábitos. ${esc(c[1])}.</p>`}
+function vMes(){const now=new Date(),hs=D.habits;if(!hs.length)return'<div class="box">Crie um hábito pra ver os números aqui.</div>';
+  const mk=key(now).slice(0,7),mc=hs.reduce((a,h)=>a+Object.keys(h.done).filter(k=>k.startsWith(mk)).length,0),ws=wk(now);
+  const exp=hs.reduce((a,h)=>a+h.goal,0),got=hs.reduce((a,h)=>a+Math.min(wc(h,ws),h.goal),0);
+  let cols='';const sel=hmH==='all'?null:hs.find(h=>h.id===hmH),st=addDays(ws,-7*16);
+  for(let i=0;i<17*7;i++){const d=addDays(st,i),k=key(d);let c='transparent';if(d<=now){const f=sel?(sel.done[k]?1:0):hs.filter(h=>h.done[k]).length/hs.length;c=f===0?'#3A2819':f<.34?'#7a5a1c':f<.67?'#c58a2c':'#F2B544'}cols+=`<i style="background:${c}" title="${k}"></i>`}
+  let bars='';for(let w=7;w>=0;w--){const s=addDays(ws,-7*w),g=hs.reduce((a,h)=>a+Math.min(wc(h,s),h.goal),0),p=exp?Math.round(g/exp*100):0;bars+=`<div class="bar"><i style="height:${p}%"></i>${p}%</div>`}
+  return`<div class="stats"><div class="stat"><b>${Math.max(...hs.map(best))}</b>melhor sequência (dias)</div><div class="stat"><b>${mc}</b>checks neste mês</div><div class="stat"><b>${exp?Math.round(got/exp*100):0}%</b>meta desta semana</div><div class="stat"><b>${perfect()}</b>dias perfeitos</div></div>
+  <h2>calendário de calor</h2><label style="margin-bottom:8px">Mostrar<select id="hmsel"><option value="all">Todos os hábitos</option>${hs.map(h=>`<option value="${h.id}" ${h.id===hmH?'selected':''}>${esc(h.name)}</option>`).join('')}</select></label><div class="hm">${cols}</div>
+  <h2>últimas 8 semanas</h2><div class="bars">${bars}</div>`}
+function vDiario(){const cur=D.journal[jDate],m=jMood??(cur?cur.mood:null),tx=jText??(cur?cur.text:'');
+  return`<div class="box f"><div class="sm">Como foi o dia? (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><button class="btn" data-act="jsave">Salvar dia</button></div>
+  <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}</div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
+function vConq(){const u=ACH.filter(a=>a[3]()).length;return`<p class="sm">${u} de ${ACH.length} adesivos colados.</p><div class="ach">${ACH.map((a,i)=>{const ok=a[3]();return ok?`<div class="a1 ${light(a[4])?'l':''}" style="--c:${a[4]};--r:${i%2?2:-2}deg"><em>${a[0]}</em><b>${a[1]}</b><span>${a[2]}</span></div>`:`<div class="a1 x"><em>?</em><b>${a[1]}</b><span>${a[2]}</span></div>`}).join('')}</div>`}
+
+function render(){if(cloud&&!user&&!localOnly){$('#app').innerHTML=vLogin();return}
+  const c=catState(),x=xp(),lv=1+Math.floor(x/100),fill=Math.floor((x%100)/10);
+  const V={hoje:vHoje,jardim:vJardim,mes:vMes,diario:vDiario,conq:vConq}[view](),
+  tabs=[['hoje','☀️','Hoje'],['jardim','🪴','Jardim'],['mes','📅','Mês'],['diario','✏️','Diário'],['conq','🏷️','Adesivos']];
+  $('#app').innerHTML=`<header><div><h1>meu cantinho</h1><div class="sm">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pill"><b>${c[0]}</b><div>${c[1]}<div class="xp" title="${x} XP">${Array.from({length:10},(_,i)=>`<i class="${i<fill?'f':''}"></i>`).join('')}</div><span class="sm">nível ${lv}</span></div></div></header>${V}
+  <p class="sm" style="margin-top:22px"><span id="sync">${cloud?(user?esc(syncMsg||'salvo na nuvem ✓'):'só neste aparelho'):'modo local (sem nuvem configurada)'}</span> ${cloud&&user?`· ${esc(user.email)} <a href="#" data-act="out" style="color:var(--lamp)">sair</a>`:''}${cloud&&!user?' · <a href="#" data-act="login" style="color:var(--lamp)">entrar</a>':''}</p>
+  <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>`}
+
+async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value;if(!email||password.length<6){loginMsg='Preencha o e-mail e uma senha de 6+ caracteres.';return render()}
+  const r=m==='in'?await cloud.auth.signInWithPassword({email,password}):await cloud.auth.signUp({email,password});
+  if(r.error){loginMsg=/Invalid login/i.test(r.error.message)?'E-mail ou senha incorretos.':r.error.message;return render()}
+  if(m==='up'&&!r.data.session){loginMsg='Conta criada. Confirme o e-mail que você recebeu e depois entre.';render()}}
+
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;if(b.tagName==='A')e.preventDefault();
+  if(a==='tab'){view=b.dataset.v;render()}
+  else if(a==='day')toggle(b.dataset.id,b.dataset.k)
+  else if(a==='del'){const h=D.habits.find(x=>x.id===b.dataset.id);if(h&&confirm('Apagar "'+h.name+'" e todo o histórico?')){D.habits=D.habits.filter(x=>x!==h);save();render()}}
+  else if(a==='mood'){jText=$('#jt').value;jMood=+b.dataset.m;render()}
+  else if(a==='jsave'){D.journal[jDate]={mood:jMood??(D.journal[jDate]?D.journal[jDate].mood:2),text:$('#jt').value.trim()};jMood=null;jText=null;save();render()}
+  else if(a==='in'||a==='up')auth(a)
+  else if(a==='local'){localStorage.setItem('cantinho-local','1');localOnly=true;render()}
+  else if(a==='login'){localStorage.removeItem('cantinho-local');localOnly=false;render()}
+  else if(a==='out'){await cloud.auth.signOut();user=null;localOnly=false;localStorage.removeItem('cantinho-local');localStorage.removeItem(LS);D=norm({});render()}});
+document.addEventListener('submit',e=>{if(e.target.id!=='nf')return;e.preventDefault();const n=$('#fn').value.trim();if(!n)return;
+  D.habits.push({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,type:$('#ft').value,color:$('#fc').value,goal:+$('#fg').value,done:{}});save();render()});
+document.addEventListener('change',e=>{if(e.target.id==='hmsel'){hmH=e.target.value;render()}});
+
+(async()=>{if(cloud){const{data}=await cloud.auth.getSession();user=data.session?data.session.user:null;
+  cloud.auth.onAuthStateChange((_e,s)=>{const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;if(u){loginMsg='';pull().then(render)}else render()}});
+  if(user)await pull()}render();setInterval(()=>{if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')render()},60000)})();
+</script>
+</body>
+</html>
