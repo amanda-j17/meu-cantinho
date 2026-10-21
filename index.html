@@ -6,15 +6,16 @@
 <meta name="theme-color" content="#2B1D14">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>meu cantinho</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Bungee&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--wood:#2B1D14;--wood2:#3A2819;--lamp:#F2B544;--tat:#C8302B;--leaf:#4F7A3A;--paper:#F5E6C8;--paper2:#E3D0A8;--ink:#120b06;--soft:#D9C7A3;--mute:#6B4F33}
 *{box-sizing:border-box}
-body{margin:0;background:var(--wood);color:var(--paper);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top)) 14px 96px}
+body{margin:0;background:var(--wood);color:var(--paper);font-family:Nunito,"Trebuchet MS","Segoe UI",system-ui,sans-serif;padding:max(14px,env(safe-area-inset-top)) 14px 96px}
 #app{max-width:880px;margin:0 auto}
 button,input,select,textarea{font:inherit}
 header{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-h1{margin:0;font-size:28px;color:var(--lamp)}
-h2{font-size:19px;color:var(--lamp);margin:22px 0 10px}
+h1{margin:0;font-family:Bungee,Impact,sans-serif;font-weight:400;font-size:26px;letter-spacing:1px;color:var(--lamp);animation:glow 4s ease-in-out infinite alternate}
+h2{font-family:Bungee,Impact,sans-serif;font-weight:400;font-size:16px;letter-spacing:1px;color:var(--lamp);margin:24px 0 10px}
 .sm{font-size:12px;color:var(--soft)}
 .pill{background:var(--wood2);border:2px solid var(--lamp);border-radius:10px;padding:6px 12px;display:flex;align-items:center;gap:10px;font-size:14px}
 .pill b{font-size:26px;font-weight:400;line-height:1}
@@ -44,7 +45,7 @@ nav button{flex:1;max-width:120px;background:none;border:0;color:var(--soft);pad
 nav button span{display:block;font-size:20px}nav button.a{background:var(--wood2);color:var(--lamp)}
 .scene{overflow-x:auto;border:2px solid var(--ink);border-radius:12px;background:#2f2016}.scene svg{display:block;min-height:260px}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.stat{background:var(--wood2);border:2px solid var(--mute);border-radius:10px;padding:10px}.stat b{display:block;font-size:26px;color:var(--lamp)}
+.stat{background:var(--wood2);border:2px solid var(--mute);border-radius:10px;padding:10px}.stat b{display:block;font-family:Bungee,Impact,sans-serif;font-weight:400;font-size:24px;color:var(--lamp)}
 .hm{display:grid;grid-auto-flow:column;grid-template-rows:repeat(7,16px);gap:3px;overflow-x:auto;padding-bottom:4px}.hm i{width:16px;height:16px;border-radius:3px}
 .bars{display:flex;gap:8px;align-items:flex-end;height:110px}.bar{flex:1;text-align:center;font-size:11px;color:var(--soft);display:flex;flex-direction:column;justify-content:flex-end;height:100%}.bar i{display:block;background:var(--lamp);border:2px solid var(--ink);min-height:3px}
 .moods{display:flex;gap:8px}.moods button{flex:1;font-size:26px;padding:8px;border-radius:10px;border:2px solid var(--mute);background:var(--wood2);cursor:pointer}.moods button.a{border-color:var(--lamp);background:var(--mute)}
@@ -55,6 +56,33 @@ nav button span{display:block;font-size:20px}nav button.a{background:var(--wood2
 .a1 b{display:block;font-size:15px}.a1 span{font-size:12px}.a1 em{font-size:26px;font-style:normal}
 .err{color:#F09595;font-size:14px;min-height:20px}
 .login{max-width:380px;margin:8vh auto 0}
+.ea{display:flex;gap:8px;margin-top:6px}.ea button{background:none;border:1px solid var(--mute);color:var(--soft);border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer}.ea button:hover{color:var(--lamp);border-color:var(--lamp)}
+.card{transition:transform .15s,box-shadow .15s}.card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.a1{transition:transform .2s}.a1:not(.x):hover{transform:rotate(0) scale(1.06)}
+.pill b{display:inline-block;animation:bob 3s ease-in-out infinite}
+.enter .card{animation:rise .5s backwards;animation-delay:calc(var(--i,0)*80ms)}
+.enter .a1,.enter .stat,.enter .login,.enter .ent{animation:rise .5s backwards}
+.enter .xp i.f{animation:pop .35s backwards;animation-delay:calc(var(--k)*50ms)}
+.enter nav .a span{animation:hop .45s}
+.enter .bar i{transform-origin:bottom;animation:grow .7s backwards}
+.enter .hm i{animation:pop .3s backwards;animation-delay:calc(var(--n)*5ms)}
+.ck.pop{animation:ckpop .4s}.blk.pop{animation:pop .35s}
+.sway{transform-box:fill-box;transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite}
+.tw{animation:tw 2.4s ease-in-out infinite}
+.breathe{transform-box:fill-box;transform-origin:50% 100%;animation:breathe 3.5s ease-in-out infinite}
+.zz{font-family:Bungee,sans-serif;fill:#F5E6C8;opacity:0;animation:zz 3s ease-out infinite}
+@keyframes glow{from{text-shadow:0 0 6px rgba(242,181,68,.25)}to{text-shadow:0 0 18px rgba(242,181,68,.8),0 0 36px rgba(242,181,68,.35)}}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+@keyframes pop{from{opacity:0;transform:scale(.3)}}
+@keyframes hop{40%{transform:translateY(-8px)}}
+@keyframes grow{from{transform:scaleY(0)}}
+@keyframes bob{50%{transform:translateY(-3px) rotate(-6deg)}}
+@keyframes sway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
+@keyframes tw{50%{opacity:.04}}
+@keyframes breathe{50%{transform:scale(1.025,1.05)}}
+@keyframes zz{0%{opacity:0;transform:translate(0,0)}25%{opacity:1}100%{opacity:0;transform:translate(10px,-26px)}}
+@keyframes ckpop{40%{transform:scale(1.08)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
@@ -73,7 +101,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 const wk=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
 const norm=d=>({habits:(d.habits||[]).map(h=>({goal:7,done:{},...h})),journal:d.journal||{},t:d.t||0});
 function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||localStorage.getItem('meu-cantinho-v1'));if(d&&d.habits)return norm(d)}catch(e){}return norm({})}
-let D=loadLocal(),user=null,view='hoje',hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
+let D=loadLocal(),user=null,view='hoje',animNext=true,popKey=null,hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
 
 function setSync(m){syncMsg=m;const el=$('#sync');if(el)el.textContent=m}
 function save(){D.t=Date.now();try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}if(cloud&&user){setSync('salvando…');clearTimeout(timer);timer=setTimeout(push,700)}}
@@ -90,7 +118,8 @@ const checks=()=>D.habits.reduce((a,h)=>a+total(h),0);
 function perfect(){if(D.habits.length<2)return 0;const s=new Set();D.habits.forEach(h=>Object.keys(h.done).forEach(k=>s.add(k)));let n=0;s.forEach(k=>{if(D.habits.every(h=>h.done[k]))n++});return n}
 const xp=()=>checks()*10+Object.keys(D.journal).length*5;
 
-function toggle(id,k){const h=D.habits.find(x=>x.id===id);if(!h)return;if(h.done[k])delete h.done[k];else h.done[k]=1;save();render()}
+function toggle(id,k){const h=D.habits.find(x=>x.id===id);if(!h)return;const on=!h.done[k];if(on)h.done[k]=1;else delete h.done[k];popKey=on?id+k:null;save();render();popKey=null;if(on)burst(id,k)}
+function burst(id,k){const el=document.querySelector('.ck[data-id="'+id+'"][data-k="'+k+'"]');if(!el||matchMedia('(prefers-reduced-motion:reduce)').matches)return;const r=el.getBoundingClientRect(),E=['✨','🌱','💛','🌿','⭐','🍃'];for(let i=0;i<10;i++){const e=document.createElement('span');e.textContent=E[i%E.length];e.style.cssText='position:fixed;pointer-events:none;z-index:9;font-size:18px;left:'+(r.left+r.width/2)+'px;top:'+(r.top+r.height/2)+'px';document.body.appendChild(e);const a=Math.PI*2*i/10,d=50+Math.random()*40;e.animate([{transform:'translate(0,0) scale(.4)',opacity:1},{transform:'translate('+Math.cos(a)*d+'px,'+(Math.sin(a)*d-20)+'px) scale(1.2)',opacity:0}],{duration:700+Math.random()*300,easing:'ease-out'}).onfinish=()=>e.remove()}}
 function catState(){const hs=D.habits;if(!hs.length)return['😺','esperando seu primeiro hábito'];const k=key(new Date()),n=hs.filter(h=>h.done[k]).length;
   if(n===hs.length)return['😻','tudo feito, o gato aprova'];if(n>0)return['😺','tá indo bem, falta pouco'];return new Date().getHours()<17?['😴','dormindo na rede']:['😾','o gato tá de olho em você']}
 
@@ -118,45 +147,45 @@ function plant(h,x,y){const st=stage(h),g='#4F7A3A',t=h.type;let s='';
     for(let i=0;i<n;i++){const sd=i%2?1:-1,ly=y-H*(.25+.65*i/n),L=t==='samambaia'?18:12;s+=`<ellipse cx="${x+sd*L}" cy="${ly}" rx="${L}" ry="6" transform="rotate(${sd*-25} ${x+sd*L} ${ly})" fill="#6FA050" stroke="#120b06" stroke-width="1.5"/>`}
     if(st===3&&t==='girassol')s+=flower(x,y-H-8,'#F2B544',16);if(st===3&&t==='flor')s+=flower(x,y-H-6,'#ED93B1',12);
     if(st===2&&t!=='samambaia')s+=`<circle cx="${x}" cy="${y-H-4}" r="6" fill="${t==='girassol'?'#F2B544':'#ED93B1'}" stroke="#120b06" stroke-width="1.5"/>`}
-  return s+`<path d="M${x-26} ${y} L${x+26} ${y} L${x+19} ${y+30} L${x-19} ${y+30} Z" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/><rect x="${x-29}" y="${y-5}" width="58" height="9" rx="2" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/>`}
+  return `<g class="sway" style="animation-delay:-${(x%7)*.6}s">${s}</g>`+`<path d="M${x-26} ${y} L${x+26} ${y} L${x+19} ${y+30} L${x-19} ${y+30} Z" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/><rect x="${x-29}" y="${y-5}" width="58" height="9" rx="2" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/>`}
 function scene(){const n=D.habits.length,W=Math.max(560,n*100+280),sleep=catState()[0]==='😴'||catState()[0]==='😺';let s=`<svg viewBox="0 0 ${W} 280" width="${W}" role="img" aria-label="Seu jardim na sacada"><rect width="${W}" height="280" fill="#2f2016"/>`;
   s+=`<path d="M0 30 Q${W/2} 70 ${W} 30" fill="none" stroke="#6B4F33" stroke-width="2"/>`;
-  for(let i=1;i<14;i++){const t=i/14,x=W*t,y=30+80*t*(1-t)*.5*2;s+=`<circle cx="${x}" cy="${y+4}" r="16" fill="#F2B544" opacity=".13"/><circle cx="${x}" cy="${y+4}" r="5" fill="#F2B544" stroke="#120b06" stroke-width="1.5"/>`}
+  for(let i=1;i<14;i++){const t=i/14,x=W*t,y=30+80*t*(1-t)*.5*2;s+=`<circle class="tw" style="animation-delay:-${i*.37}s" cx="${x}" cy="${y+4}" r="16" fill="#F2B544" opacity=".13"/><circle cx="${x}" cy="${y+4}" r="5" fill="#F2B544" stroke="#120b06" stroke-width="1.5"/>`}
   s+=`<rect x="0" y="235" width="${W}" height="16" fill="#5a3b22" stroke="#120b06" stroke-width="2"/><rect x="0" y="251" width="${W}" height="29" fill="#241811"/>`;
   D.habits.forEach((h,i)=>{const x=60+i*100;s+=plant(h,x,205)+`<text x="${x}" y="270" text-anchor="middle" font-size="12" fill="#D9C7A3">${esc(h.name.slice(0,13))}</text>`});
   const cx=W-130;s+=`<line x1="${cx-90}" y1="110" x2="${cx-90}" y2="235" stroke="#6B4F33" stroke-width="5"/><line x1="${cx+80}" y1="110" x2="${cx+80}" y2="235" stroke="#6B4F33" stroke-width="5"/>`;
   s+=`<path d="M${cx-90} 150 Q${cx-5} 250 ${cx+80} 150" fill="#7a5a3a" stroke="#120b06" stroke-width="2.5"/>`;
-  s+=`<path d="M${cx+30} 196 Q${cx+62} 190 ${cx+55} 168" fill="none" stroke="#E08A3C" stroke-width="7" stroke-linecap="round"/><ellipse cx="${cx-8}" cy="190" rx="38" ry="17" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><circle cx="${cx-42}" cy="184" r="15" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><path d="M${cx-54} 174 L${cx-52} 160 L${cx-44} 171 Z M${cx-36} 171 L${cx-30} 160 L${cx-29} 175 Z" fill="#E08A3C" stroke="#120b06" stroke-width="2"/>`;
+  s+=`<g class="breathe"><path d="M${cx+30} 196 Q${cx+62} 190 ${cx+55} 168" fill="none" stroke="#E08A3C" stroke-width="7" stroke-linecap="round"/><ellipse cx="${cx-8}" cy="190" rx="38" ry="17" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><circle cx="${cx-42}" cy="184" r="15" fill="#E08A3C" stroke="#120b06" stroke-width="2.5"/><path d="M${cx-54} 174 L${cx-52} 160 L${cx-44} 171 Z M${cx-36} 171 L${cx-30} 160 L${cx-29} 175 Z" fill="#E08A3C" stroke="#120b06" stroke-width="2"/>`;
   s+=sleep?`<path d="M${cx-49} 184 q3 3 6 0 M${cx-39} 184 q3 3 6 0" stroke="#120b06" stroke-width="2" fill="none"/>`:`<circle cx="${cx-46}" cy="183" r="2.5" fill="#120b06"/><circle cx="${cx-36}" cy="183" r="2.5" fill="#120b06"/>`;
-  return s+'</svg>'}
+  s+='</g>';if(sleep)s+=`<text class="zz" x="${cx-60}" y="168" font-size="16">z</text><text class="zz" style="animation-delay:1.2s" x="${cx-50}" y="160" font-size="12">z</text>`;return s+'</svg>'}
 
 function vLogin(){return`<div class="login box"><h1>meu cantinho</h1><p class="sm">Entre pra seus hábitos ficarem salvos e aparecerem no PC e no celular.</p><div class="f"><label>E-mail<input id="em" type="email" autocomplete="email"></label><label>Senha (mínimo 6 caracteres)<input id="pw" type="password" autocomplete="current-password"></label><div class="err" id="err">${esc(loginMsg)}</div><button class="btn" data-act="in">Entrar</button><button class="btn g" data-act="up">Criar conta</button><button class="btn g" data-act="local">Usar só neste aparelho</button></div></div>`}
-function card(h){const now=new Date(),tk=key(now),days=[];for(let i=6;i>=0;i--)days.push(addDays(now,-i));const done=!!h.done[tk],s=streak(h),w=wc(h,wk(now));
-  return`<article class="card" style="--c:${h.color}"><div class="top"><div class="pl">${TYPES[h.type][stage(h)]}</div><div><div class="nm">${esc(h.name)}</div><div class="sb">${h.type}, nível ${level(h)}${h.goal<7?' · meta '+h.goal+'x/semana':''}</div></div><button class="del" data-act="del" data-id="${h.id}" aria-label="Apagar ${esc(h.name)}">×</button></div>
-  <div class="wk">${days.map((d,i)=>{const k=key(d);return`<div class="dy"><button class="blk ${h.done[k]?'on':''} ${i===6?'td':''}" data-act="day" data-id="${h.id}" data-k="${k}" aria-label="${esc(h.name)} ${k}"></button>${LET[d.getDay()]}</div>`}).join('')}</div>
+function card(h,i){const now=new Date(),tk=key(now),days=[];for(let i=6;i>=0;i--)days.push(addDays(now,-i));const done=!!h.done[tk],s=streak(h),w=wc(h,wk(now));
+  return`<article class="card" style="--c:${h.color};--i:${i}"><div class="top"><div class="pl">${TYPES[h.type][stage(h)]}</div><div><div class="nm">${esc(h.name)}</div><div class="sb">${h.type}, nível ${level(h)}${h.goal<7?' · meta '+h.goal+'x/semana':''}</div></div><button class="del" data-act="del" data-id="${h.id}" aria-label="Apagar ${esc(h.name)}">×</button></div>
+  <div class="wk">${days.map((d,i)=>{const k=key(d);return`<div class="dy"><button class="blk ${h.done[k]?'on':''} ${i===6?'td':''} ${popKey===h.id+k?'pop':''}" data-act="day" data-id="${h.id}" data-k="${k}" aria-label="${esc(h.name)} ${k}"></button>${LET[d.getDay()]}</div>`}).join('')}</div>
   <div class="st"><span>${s?s+' '+(h.goal>=7?(s===1?'dia':'dias'):(s===1?'semana':'semanas'))+' seguidos':'sem sequência'}</span><span>${h.goal<7?w+'/'+h.goal+' na semana · ':''}${total(h)} no total</span></div>
-  <button class="ck ${done?'d':''}" data-act="day" data-id="${h.id}" data-k="${tk}">${done?'feito hoje ✓':'marcar hoje'}</button></article>`}
+  <button class="ck ${done?'d':''} ${popKey===h.id+tk?'pop':''}" data-act="day" data-id="${h.id}" data-k="${tk}">${done?'feito hoje ✓':'marcar hoje'}</button></article>`}
 function vHoje(){return(D.habits.length?`<div class="grid">${D.habits.map(card).join('')}</div>`:`<div class="box">Seu cantinho tá vazio. Planta o primeiro hábito logo abaixo.</div>`)+`<h2>novo hábito</h2><form id="nf" class="box"><label>Nome<input id="fn" maxlength="40" placeholder="Beber 2 litros de água" required></label><div class="r2"><label>Planta<select id="ft"><option value="samambaia">Samambaia</option><option value="cacto">Cacto</option><option value="girassol">Girassol</option><option value="flor">Flor</option></select></label><label>Cor<select id="fc"><option value="#4F7A3A">Verde folha</option><option value="#C8302B">Vermelho tattoo</option><option value="#F2B544">Amarelo luz</option><option value="#7B4FA3">Roxo</option></select></label><label>Meta<select id="fg"><option value="7">Todo dia</option><option value="6">6x por semana</option><option value="5">5x por semana</option><option value="4">4x por semana</option><option value="3">3x por semana</option><option value="2">2x por semana</option><option value="1">1x por semana</option></select></label></div><button class="btn" type="submit">Plantar hábito</button></form>`}
 function vJardim(){const c=catState();return`<div class="scene">${scene()}</div><p class="sm">As plantas crescem com os checks: broto, jovem, adulta e florida. Role pro lado se tiver muitos hábitos. ${esc(c[1])}.</p>`}
 function vMes(){const now=new Date(),hs=D.habits;if(!hs.length)return'<div class="box">Crie um hábito pra ver os números aqui.</div>';
   const mk=key(now).slice(0,7),mc=hs.reduce((a,h)=>a+Object.keys(h.done).filter(k=>k.startsWith(mk)).length,0),ws=wk(now);
   const exp=hs.reduce((a,h)=>a+h.goal,0),got=hs.reduce((a,h)=>a+Math.min(wc(h,ws),h.goal),0);
   let cols='';const sel=hmH==='all'?null:hs.find(h=>h.id===hmH),st=addDays(ws,-7*16);
-  for(let i=0;i<17*7;i++){const d=addDays(st,i),k=key(d);let c='transparent';if(d<=now){const f=sel?(sel.done[k]?1:0):hs.filter(h=>h.done[k]).length/hs.length;c=f===0?'#3A2819':f<.34?'#7a5a1c':f<.67?'#c58a2c':'#F2B544'}cols+=`<i style="background:${c}" title="${k}"></i>`}
+  for(let i=0;i<17*7;i++){const d=addDays(st,i),k=key(d);let c='transparent';if(d<=now){const f=sel?(sel.done[k]?1:0):hs.filter(h=>h.done[k]).length/hs.length;c=f===0?'#3A2819':f<.34?'#7a5a1c':f<.67?'#c58a2c':'#F2B544'}cols+=`<i style="background:${c};--n:${i}" title="${k}"></i>`}
   let bars='';for(let w=7;w>=0;w--){const s=addDays(ws,-7*w),g=hs.reduce((a,h)=>a+Math.min(wc(h,s),h.goal),0),p=exp?Math.round(g/exp*100):0;bars+=`<div class="bar"><i style="height:${p}%"></i>${p}%</div>`}
   return`<div class="stats"><div class="stat"><b>${Math.max(...hs.map(best))}</b>melhor sequência (dias)</div><div class="stat"><b>${mc}</b>checks neste mês</div><div class="stat"><b>${exp?Math.round(got/exp*100):0}%</b>meta desta semana</div><div class="stat"><b>${perfect()}</b>dias perfeitos</div></div>
   <h2>calendário de calor</h2><label style="margin-bottom:8px">Mostrar<select id="hmsel"><option value="all">Todos os hábitos</option>${hs.map(h=>`<option value="${h.id}" ${h.id===hmH?'selected':''}>${esc(h.name)}</option>`).join('')}</select></label><div class="hm">${cols}</div>
   <h2>últimas 8 semanas</h2><div class="bars">${bars}</div>`}
 function vDiario(){const cur=D.journal[jDate],m=jMood??(cur?cur.mood:null),tx=jText??(cur?cur.text:'');
-  return`<div class="box f"><div class="sm">Como foi o dia? (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><button class="btn" data-act="jsave">Salvar dia</button></div>
-  <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}</div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
+  return`<div class="box f"><div class="sm">${jDate===key(new Date())?'Como foi o dia?':'Editando o dia'} (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><button class="btn" data-act="jsave">Salvar dia</button>${jDate!==key(new Date())?'<button class="btn g" data-act="jtoday">Voltar pra hoje</button>':''}</div>
+  <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}<div class="ea"><button data-act="jedit" data-d="${k}">editar</button><button data-act="jdel" data-d="${k}">excluir</button></div></div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
 function vConq(){const u=ACH.filter(a=>a[3]()).length;return`<p class="sm">${u} de ${ACH.length} adesivos colados.</p><div class="ach">${ACH.map((a,i)=>{const ok=a[3]();return ok?`<div class="a1 ${light(a[4])?'l':''}" style="--c:${a[4]};--r:${i%2?2:-2}deg"><em>${a[0]}</em><b>${a[1]}</b><span>${a[2]}</span></div>`:`<div class="a1 x"><em>?</em><b>${a[1]}</b><span>${a[2]}</span></div>`}).join('')}</div>`}
 
-function render(){if(cloud&&!user&&!localOnly){$('#app').innerHTML=vLogin();return}
+function render(){$('#app').className=animNext?'enter':'';animNext=false;if(cloud&&!user&&!localOnly){$('#app').innerHTML=vLogin();return}
   const c=catState(),x=xp(),lv=1+Math.floor(x/100),fill=Math.floor((x%100)/10);
   const V={hoje:vHoje,jardim:vJardim,mes:vMes,diario:vDiario,conq:vConq}[view](),
   tabs=[['hoje','☀️','Hoje'],['jardim','🪴','Jardim'],['mes','📅','Mês'],['diario','✏️','Diário'],['conq','🏷️','Adesivos']];
-  $('#app').innerHTML=`<header><div><h1>meu cantinho</h1><div class="sm">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pill"><b>${c[0]}</b><div>${c[1]}<div class="xp" title="${x} XP">${Array.from({length:10},(_,i)=>`<i class="${i<fill?'f':''}"></i>`).join('')}</div><span class="sm">nível ${lv}</span></div></div></header>${V}
+  $('#app').innerHTML=`<header><div><h1>meu cantinho</h1><div class="sm">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pill"><b>${c[0]}</b><div>${c[1]}<div class="xp" title="${x} XP">${Array.from({length:10},(_,i)=>`<i class="${i<fill?'f':''}" style="--k:${i}"></i>`).join('')}</div><span class="sm">nível ${lv}</span></div></div></header>${V}
   <p class="sm" style="margin-top:22px"><span id="sync">${cloud?(user?esc(syncMsg||'salvo na nuvem ✓'):'só neste aparelho'):'modo local (sem nuvem configurada)'}</span> ${cloud&&user?`· ${esc(user.email)} <a href="#" data-act="out" style="color:var(--lamp)">sair</a>`:''}${cloud&&!user?' · <a href="#" data-act="login" style="color:var(--lamp)">entrar</a>':''}</p>
   <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>`}
 
@@ -166,11 +195,14 @@ async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value
   if(m==='up'&&!r.data.session){loginMsg='Conta criada. Confirme o e-mail que você recebeu e depois entre.';render()}}
 
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;if(b.tagName==='A')e.preventDefault();
-  if(a==='tab'){view=b.dataset.v;render()}
+  if(a==='tab'){view=b.dataset.v;animNext=true;render()}
   else if(a==='day')toggle(b.dataset.id,b.dataset.k)
   else if(a==='del'){const h=D.habits.find(x=>x.id===b.dataset.id);if(h&&confirm('Apagar "'+h.name+'" e todo o histórico?')){D.habits=D.habits.filter(x=>x!==h);save();render()}}
   else if(a==='mood'){jText=$('#jt').value;jMood=+b.dataset.m;render()}
-  else if(a==='jsave'){D.journal[jDate]={mood:jMood??(D.journal[jDate]?D.journal[jDate].mood:2),text:$('#jt').value.trim()};jMood=null;jText=null;save();render()}
+  else if(a==='jsave'){D.journal[jDate]={mood:jMood??(D.journal[jDate]?D.journal[jDate].mood:2),text:$('#jt').value.trim()};jDate=key(new Date());jMood=null;jText=null;save();render()}
+  else if(a==='jedit'){jDate=b.dataset.d;jMood=null;jText=null;render();scrollTo({top:0,behavior:'smooth'})}
+  else if(a==='jdel'){const d=b.dataset.d;if(confirm('Apagar a nota do dia '+d.split('-').reverse().join('/')+'?')){delete D.journal[d];if(jDate===d){jMood=null;jText=null}save();render()}}
+  else if(a==='jtoday'){jDate=key(new Date());jMood=null;jText=null;render()}
   else if(a==='in'||a==='up')auth(a)
   else if(a==='local'){localStorage.setItem('cantinho-local','1');localOnly=true;render()}
   else if(a==='login'){localStorage.removeItem('cantinho-local');localOnly=false;render()}
@@ -180,7 +212,7 @@ document.addEventListener('submit',e=>{if(e.target.id!=='nf')return;e.preventDef
 document.addEventListener('change',e=>{if(e.target.id==='hmsel'){hmH=e.target.value;render()}});
 
 (async()=>{if(cloud){const{data}=await cloud.auth.getSession();user=data.session?data.session.user:null;
-  cloud.auth.onAuthStateChange((_e,s)=>{const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;if(u){loginMsg='';pull().then(render)}else render()}});
+  cloud.auth.onAuthStateChange((_e,s)=>{const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;if(u){loginMsg='';pull().then(()=>{animNext=true;render()})}else render()}});
   if(user)await pull()}render();setInterval(()=>{if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')render()},60000)})();
 </script>
 </body>
