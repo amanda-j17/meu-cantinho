@@ -83,10 +83,38 @@ nav button span{display:block;font-size:20px}nav button.a{background:var(--wood2
 @keyframes zz{0%{opacity:0;transform:translate(0,0)}25%{opacity:1}100%{opacity:0;transform:translate(10px,-26px)}}
 @keyframes ckpop{40%{transform:scale(1.08)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+#app{position:relative;z-index:1}
+#bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#bg svg{position:absolute;fill:#3A2819;stroke:#6B4F33;stroke-width:2;opacity:.75}
+#bg .eye{fill:#F2B544;stroke:none}
+.c-walk{bottom:68px;left:0;width:110px;animation:walk 70s linear infinite}
+.c-sit{bottom:64px;left:3%;width:62px}
+.c-loaf{top:96px;right:3%;width:100px}
+.tail{transform-box:fill-box;transform-origin:0% 100%;animation:swish 3s ease-in-out infinite}
+.blink{transform-box:fill-box;transform-origin:center;animation:blink 5s infinite}
+.leg{transform-box:fill-box;transform-origin:50% 0;animation:leg .6s ease-in-out infinite alternate}.leg.b{animation-direction:alternate-reverse}
+.cloud{animation:cloud 90s linear infinite}
+@keyframes walk{from{transform:translateX(-140px)}to{transform:translateX(100vw)}}
+@keyframes swish{50%{transform:rotate(18deg)}}
+@keyframes blink{0%,93%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes leg{from{transform:rotate(-22deg)}to{transform:rotate(22deg)}}
+@keyframes cloud{from{transform:translateX(-80px)}to{transform:translateX(1400px)}}
+@media (max-width:600px){.c-loaf{display:none}}
+.ov{position:fixed;inset:0;background:rgba(18,11,6,.85);z-index:20;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto;animation:rise .3s backwards}
+.mod{max-width:420px;width:100%;margin:auto}.mod p{margin:0;line-height:1.55}
+.chk{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--paper);background:var(--wood);padding:10px;border-radius:8px}.chk input{width:20px;height:20px}
+a.btn{display:block;text-align:center;text-decoration:none}
+.gg{background:var(--paper);color:var(--ink);border-color:var(--ink)}
+.login{max-width:440px;margin:3vh auto 0}.login .scene svg{width:100%;height:auto;min-height:0}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 </head>
 <body>
+<div id="bg" aria-hidden="true">
+<svg class="c-walk" viewBox="0 0 110 56"><g class="bob"><path class="tail" d="M20 24 Q4 14 10 2" style="fill:none;stroke-width:5;stroke-linecap:round;stroke:#5a3f28"/><rect class="leg" x="30" y="34" width="6" height="18" rx="3"/><rect class="leg b" x="40" y="34" width="6" height="18" rx="3"/><ellipse cx="48" cy="26" rx="30" ry="12"/><rect class="leg b" x="58" y="34" width="6" height="18" rx="3"/><rect class="leg" x="68" y="34" width="6" height="18" rx="3"/><circle cx="82" cy="18" r="11"/><path d="M74 10 L76 0 L83 8 Z M84 8 L90 0 L91 12 Z"/><circle class="eye" cx="86" cy="16" r="2"/></g></svg>
+<svg class="c-sit" viewBox="0 0 72 90"><path class="tail" d="M48 80 Q66 78 60 56" style="fill:none;stroke-width:6;stroke-linecap:round;stroke:#5a3f28"/><ellipse cx="32" cy="64" rx="18" ry="24"/><circle cx="32" cy="30" r="14"/><path d="M20 22 L22 6 L32 18 Z M44 22 L42 6 L32 18 Z"/><circle class="eye blink" cx="27" cy="29" r="2"/><circle class="eye blink" cx="37" cy="29" r="2"/></svg>
+<svg class="c-loaf" viewBox="0 0 110 60"><g class="breathe"><path d="M4 56 Q4 18 48 18 Q92 18 96 56 Z"/><path d="M14 26 L16 10 L28 22 Z M34 22 L44 10 L46 26 Z"/><path d="M92 52 Q106 46 98 34" style="fill:none;stroke-width:5;stroke-linecap:round;stroke:#5a3f28"/><path d="M18 36 q4 4 8 0 M34 36 q4 4 8 0" style="fill:none;stroke:#F2B544;stroke-width:2"/></g></svg>
+</div>
 <div id="app"></div>
 <script>
 const SUPABASE_URL='https://icshvbqyvxhoynzankdr.supabase.co';
@@ -99,9 +127,9 @@ const pad=n=>String(n).padStart(2,'0'),key=d=>d.getFullYear()+'-'+pad(d.getMonth
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const wk=d=>{const x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
-const norm=d=>({habits:(d.habits||[]).map(h=>({goal:7,done:{},...h})),journal:d.journal||{},t:d.t||0});
+const norm=d=>({habits:(d.habits||[]).map(h=>({goal:7,done:{},...h})),journal:d.journal||{},onboarded:!!d.onboarded||(d.habits||[]).length>0,t:d.t||0});
 function loadLocal(){try{const d=JSON.parse(localStorage.getItem(LS)||localStorage.getItem('meu-cantinho-v1'));if(d&&d.habits)return norm(d)}catch(e){}return norm({})}
-let D=loadLocal(),user=null,view='hoje',animNext=true,popKey=null,hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
+let D=loadLocal(),user=null,view='hoje',animNext=true,popKey=null,recovering=false,loginEmail='',editId=null,sumUrl=null,sumCanvas=null,hmH='all',jDate=key(new Date()),jMood=null,jText=null,syncMsg='',loginMsg='',localOnly=localStorage.getItem('cantinho-local')==='1',timer;
 
 function setSync(m){syncMsg=m;const el=$('#sync');if(el)el.textContent=m}
 function save(){D.t=Date.now();try{localStorage.setItem(LS,JSON.stringify(D))}catch(e){}if(cloud&&user){setSync('salvando…');clearTimeout(timer);timer=setTimeout(push,700)}}
@@ -148,9 +176,9 @@ function plant(h,x,y){const st=stage(h),g='#4F7A3A',t=h.type;let s='';
     if(st===3&&t==='girassol')s+=flower(x,y-H-8,'#F2B544',16);if(st===3&&t==='flor')s+=flower(x,y-H-6,'#ED93B1',12);
     if(st===2&&t!=='samambaia')s+=`<circle cx="${x}" cy="${y-H-4}" r="6" fill="${t==='girassol'?'#F2B544':'#ED93B1'}" stroke="#120b06" stroke-width="1.5"/>`}
   return `<g class="sway" style="animation-delay:-${(x%7)*.6}s">${s}</g>`+`<path d="M${x-26} ${y} L${x+26} ${y} L${x+19} ${y+30} L${x-19} ${y+30} Z" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/><rect x="${x-29}" y="${y-5}" width="58" height="9" rx="2" fill="${h.color}" stroke="#120b06" stroke-width="2.5"/>`}
-function scene(){const n=D.habits.length,W=Math.max(560,n*100+280),sleep=catState()[0]==='😴'||catState()[0]==='😺';let s=`<svg viewBox="0 0 ${W} 280" width="${W}" role="img" aria-label="Seu jardim na sacada"><rect width="${W}" height="280" fill="#2f2016"/>`;
+function scene(){const n=D.habits.length,W=Math.max(560,n*100+280),sleep=catState()[0]==='😴'||catState()[0]==='😺';let s=`<svg viewBox="0 0 ${W} 280" width="${W}" role="img" aria-label="Seu jardim na sacada">${sky(W)}`;
   s+=`<path d="M0 30 Q${W/2} 70 ${W} 30" fill="none" stroke="#6B4F33" stroke-width="2"/>`;
-  for(let i=1;i<14;i++){const t=i/14,x=W*t,y=30+80*t*(1-t)*.5*2;s+=`<circle class="tw" style="animation-delay:-${i*.37}s" cx="${x}" cy="${y+4}" r="16" fill="#F2B544" opacity=".13"/><circle cx="${x}" cy="${y+4}" r="5" fill="#F2B544" stroke="#120b06" stroke-width="1.5"/>`}
+  for(let i=1;i<14;i++){const t=i/14,x=W*t,y=30+80*t*(1-t)*.5*2;s+=`<circle class="tw" style="animation-delay:-${i*.37}s" cx="${x}" cy="${y+4}" r="16" fill="#F2B544" opacity="${phase()==='n'?.3:phase()==='d'?.05:.18}"/><circle cx="${x}" cy="${y+4}" r="5" fill="#F2B544" stroke="#120b06" stroke-width="1.5"/>`}
   s+=`<rect x="0" y="235" width="${W}" height="16" fill="#5a3b22" stroke="#120b06" stroke-width="2"/><rect x="0" y="251" width="${W}" height="29" fill="#241811"/>`;
   D.habits.forEach((h,i)=>{const x=60+i*100;s+=plant(h,x,205)+`<text x="${x}" y="270" text-anchor="middle" font-size="12" fill="#D9C7A3">${esc(h.name.slice(0,13))}</text>`});
   const cx=W-130;s+=`<line x1="${cx-90}" y1="110" x2="${cx-90}" y2="235" stroke="#6B4F33" stroke-width="5"/><line x1="${cx+80}" y1="110" x2="${cx+80}" y2="235" stroke="#6B4F33" stroke-width="5"/>`;
@@ -159,14 +187,13 @@ function scene(){const n=D.habits.length,W=Math.max(560,n*100+280),sleep=catStat
   s+=sleep?`<path d="M${cx-49} 184 q3 3 6 0 M${cx-39} 184 q3 3 6 0" stroke="#120b06" stroke-width="2" fill="none"/>`:`<circle cx="${cx-46}" cy="183" r="2.5" fill="#120b06"/><circle cx="${cx-36}" cy="183" r="2.5" fill="#120b06"/>`;
   s+='</g>';if(sleep)s+=`<text class="zz" x="${cx-60}" y="168" font-size="16">z</text><text class="zz" style="animation-delay:1.2s" x="${cx-50}" y="160" font-size="12">z</text>`;return s+'</svg>'}
 
-function vLogin(){return`<div class="login box"><h1>meu cantinho</h1><p class="sm">Entre pra seus hábitos ficarem salvos e aparecerem no PC e no celular.</p><div class="f"><label>E-mail<input id="em" type="email" autocomplete="email"></label><label>Senha (mínimo 6 caracteres)<input id="pw" type="password" autocomplete="current-password"></label><div class="err" id="err">${esc(loginMsg)}</div><button class="btn" data-act="in">Entrar</button><button class="btn g" data-act="up">Criar conta</button><button class="btn g" data-act="local">Usar só neste aparelho</button></div></div>`}
 function card(h,i){const now=new Date(),tk=key(now),days=[];for(let i=6;i>=0;i--)days.push(addDays(now,-i));const done=!!h.done[tk],s=streak(h),w=wc(h,wk(now));
-  return`<article class="card" style="--c:${h.color};--i:${i}"><div class="top"><div class="pl">${TYPES[h.type][stage(h)]}</div><div><div class="nm">${esc(h.name)}</div><div class="sb">${h.type}, nível ${level(h)}${h.goal<7?' · meta '+h.goal+'x/semana':''}</div></div><button class="del" data-act="del" data-id="${h.id}" aria-label="Apagar ${esc(h.name)}">×</button></div>
+  return`<article class="card" style="--c:${h.color};--i:${i}"><div class="top"><div class="pl">${TYPES[h.type][stage(h)]}</div><div><div class="nm">${esc(h.name)}</div><div class="sb">${h.type}, nível ${level(h)}${h.goal<7?' · meta '+h.goal+'x/semana':''}</div></div><button class="del" data-act="hedit" data-id="${h.id}" aria-label="Editar ${esc(h.name)}">✎</button><button class="del" data-act="del" data-id="${h.id}" aria-label="Apagar ${esc(h.name)}">×</button></div>
   <div class="wk">${days.map((d,i)=>{const k=key(d);return`<div class="dy"><button class="blk ${h.done[k]?'on':''} ${i===6?'td':''} ${popKey===h.id+k?'pop':''}" data-act="day" data-id="${h.id}" data-k="${k}" aria-label="${esc(h.name)} ${k}"></button>${LET[d.getDay()]}</div>`}).join('')}</div>
   <div class="st"><span>${s?s+' '+(h.goal>=7?(s===1?'dia':'dias'):(s===1?'semana':'semanas'))+' seguidos':'sem sequência'}</span><span>${h.goal<7?w+'/'+h.goal+' na semana · ':''}${total(h)} no total</span></div>
   <button class="ck ${done?'d':''} ${popKey===h.id+tk?'pop':''}" data-act="day" data-id="${h.id}" data-k="${tk}">${done?'feito hoje ✓':'marcar hoje'}</button></article>`}
-function vHoje(){return(D.habits.length?`<div class="grid">${D.habits.map(card).join('')}</div>`:`<div class="box">Seu cantinho tá vazio. Planta o primeiro hábito logo abaixo.</div>`)+`<h2>novo hábito</h2><form id="nf" class="box"><label>Nome<input id="fn" maxlength="40" placeholder="Beber 2 litros de água" required></label><div class="r2"><label>Planta<select id="ft"><option value="samambaia">Samambaia</option><option value="cacto">Cacto</option><option value="girassol">Girassol</option><option value="flor">Flor</option></select></label><label>Cor<select id="fc"><option value="#4F7A3A">Verde folha</option><option value="#C8302B">Vermelho tattoo</option><option value="#F2B544">Amarelo luz</option><option value="#7B4FA3">Roxo</option></select></label><label>Meta<select id="fg"><option value="7">Todo dia</option><option value="6">6x por semana</option><option value="5">5x por semana</option><option value="4">4x por semana</option><option value="3">3x por semana</option><option value="2">2x por semana</option><option value="1">1x por semana</option></select></label></div><button class="btn" type="submit">Plantar hábito</button></form>`}
-function vJardim(){const c=catState();return`<div class="scene">${scene()}</div><p class="sm">As plantas crescem com os checks: broto, jovem, adulta e florida. Role pro lado se tiver muitos hábitos. ${esc(c[1])}.</p>`}
+function vHoje(){return(D.habits.length?`<div class="grid">${D.habits.map(card).join('')}</div>`:`<div class="box">Seu cantinho tá vazio. Planta o primeiro hábito logo abaixo.</div>`)+`<h2>novo hábito</h2><form id="nf" class="box"><label>Nome<input id="fn" maxlength="40" placeholder="Beber 2 litros de água" required></label><div class="r2"><label>Planta<select id="ft"><option value="samambaia">Samambaia</option><option value="cacto">Cacto</option><option value="girassol">Girassol</option><option value="flor">Flor</option></select></label><label>Cor<select id="fc"><option value="#4F7A3A">Verde folha</option><option value="#C8302B">Vermelho tattoo</option><option value="#F2B544">Amarelo luz</option><option value="#7B4FA3">Roxo</option></select></label><label>Meta<select id="fg"><option value="7">Todo dia</option><option value="6">6x por semana</option><option value="5">5x por semana</option><option value="4">4x por semana</option><option value="3">3x por semana</option><option value="2">2x por semana</option><option value="1">1x por semana</option></select></label></div><button class="btn" type="submit">Plantar hábito</button></form><h2>seus dados</h2><div class="box f"><div class="r2"><button class="btn g" data-act="export">Baixar backup</button><button class="btn g" data-act="import">Restaurar backup</button></div><button class="btn g" data-act="tour">Ver o tutorial de novo</button><input id="imp" type="file" accept="application/json" hidden></div>`}
+function vJardim(){const c=catState();return`<div class="scene">${scene()}</div><p class="sm">Agora no seu jardim: ${{n:'de noite',a:'amanhecendo',d:'de dia',s:'entardecendo'}[phase()]}. As plantas crescem com os checks: broto, jovem, adulta e florida. Role pro lado se tiver muitos hábitos. ${esc(c[1])}.</p>`}
 function vMes(){const now=new Date(),hs=D.habits;if(!hs.length)return'<div class="box">Crie um hábito pra ver os números aqui.</div>';
   const mk=key(now).slice(0,7),mc=hs.reduce((a,h)=>a+Object.keys(h.done).filter(k=>k.startsWith(mk)).length,0),ws=wk(now);
   const exp=hs.reduce((a,h)=>a+h.goal,0),got=hs.reduce((a,h)=>a+Math.min(wc(h,ws),h.goal),0);
@@ -174,22 +201,61 @@ function vMes(){const now=new Date(),hs=D.habits;if(!hs.length)return'<div class
   for(let i=0;i<17*7;i++){const d=addDays(st,i),k=key(d);let c='transparent';if(d<=now){const f=sel?(sel.done[k]?1:0):hs.filter(h=>h.done[k]).length/hs.length;c=f===0?'#3A2819':f<.34?'#7a5a1c':f<.67?'#c58a2c':'#F2B544'}cols+=`<i style="background:${c};--n:${i}" title="${k}"></i>`}
   let bars='';for(let w=7;w>=0;w--){const s=addDays(ws,-7*w),g=hs.reduce((a,h)=>a+Math.min(wc(h,s),h.goal),0),p=exp?Math.round(g/exp*100):0;bars+=`<div class="bar"><i style="height:${p}%"></i>${p}%</div>`}
   return`<div class="stats"><div class="stat"><b>${Math.max(...hs.map(best))}</b>melhor sequência (dias)</div><div class="stat"><b>${mc}</b>checks neste mês</div><div class="stat"><b>${exp?Math.round(got/exp*100):0}%</b>meta desta semana</div><div class="stat"><b>${perfect()}</b>dias perfeitos</div></div>
-  <h2>calendário de calor</h2><label style="margin-bottom:8px">Mostrar<select id="hmsel"><option value="all">Todos os hábitos</option>${hs.map(h=>`<option value="${h.id}" ${h.id===hmH?'selected':''}>${esc(h.name)}</option>`).join('')}</select></label><div class="hm">${cols}</div>
+  <div class="r2" style="margin-top:12px"><button class="btn" data-act="sum" data-k="w">Resumo da semana</button><button class="btn" data-act="sum" data-k="m">Resumo do mês</button></div><h2>calendário de calor</h2><label style="margin-bottom:8px">Mostrar<select id="hmsel"><option value="all">Todos os hábitos</option>${hs.map(h=>`<option value="${h.id}" ${h.id===hmH?'selected':''}>${esc(h.name)}</option>`).join('')}</select></label><div class="hm">${cols}</div>
   <h2>últimas 8 semanas</h2><div class="bars">${bars}</div>`}
 function vDiario(){const cur=D.journal[jDate],m=jMood??(cur?cur.mood:null),tx=jText??(cur?cur.text:'');
   return`<div class="box f"><div class="sm">${jDate===key(new Date())?'Como foi o dia?':'Editando o dia'} (${jDate.split('-').reverse().join('/')})</div><div class="moods">${MOODS.map((e,i)=>`<button class="${m===i?'a':''}" data-act="mood" data-m="${i}" aria-label="humor ${i+1}">${e}</button>`).join('')}</div><textarea id="jt" rows="3" maxlength="200" placeholder="Uma frase sobre hoje">${esc(tx)}</textarea><button class="btn" data-act="jsave">Salvar dia</button>${jDate!==key(new Date())?'<button class="btn g" data-act="jtoday">Voltar pra hoje</button>':''}</div>
   <h2>dias anteriores</h2>${Object.keys(D.journal).sort().reverse().slice(0,12).map(k=>`<div class="ent">${MOODS[D.journal[k].mood]} <span class="sm">${k.split('-').reverse().join('/')}</span><br>${esc(D.journal[k].text||'')}<div class="ea"><button data-act="jedit" data-d="${k}">editar</button><button data-act="jdel" data-d="${k}">excluir</button></div></div>`).join('')||'<p class="sm">Nada escrito ainda.</p>'}`}
 function vConq(){const u=ACH.filter(a=>a[3]()).length;return`<p class="sm">${u} de ${ACH.length} adesivos colados.</p><div class="ach">${ACH.map((a,i)=>{const ok=a[3]();return ok?`<div class="a1 ${light(a[4])?'l':''}" style="--c:${a[4]};--r:${i%2?2:-2}deg"><em>${a[0]}</em><b>${a[1]}</b><span>${a[2]}</span></div>`:`<div class="a1 x"><em>?</em><b>${a[1]}</b><span>${a[2]}</span></div>`}).join('')}</div>`}
 
-function render(){$('#app').className=animNext?'enter':'';animNext=false;if(cloud&&!user&&!localOnly){$('#app').innerHTML=vLogin();return}
+const back=()=>location.href.split('#')[0].split('?')[0];
+async function google(){const r=await cloud.auth.signInWithOAuth({provider:'google',options:{redirectTo:back()}});if(r.error){loginMsg=r.error.message;render()}}
+async function forgot(){const email=$('#em').value.trim();loginEmail=email;if(!email){loginMsg='Digite seu e-mail no campo acima e toque de novo em "Esqueci minha senha".';return render()}const r=await cloud.auth.resetPasswordForEmail(email,{redirectTo:back()});loginMsg=r.error?r.error.message:'Mandei um link pra '+email+'. Confira a caixa de entrada e o spam.';render()}
+async function newpw(){const pw=$('#np').value;if(pw.length<6){loginMsg='Use 6 ou mais caracteres.';return render()}const r=await cloud.auth.updateUser({password:pw});if(r.error){loginMsg=r.error.message;return render()}recovering=false;loginMsg='';history.replaceState(null,'',back());animNext=true;render()}
+function vReset(){return`<div class="login"><div class="box f"><h1>nova senha</h1><label>Nova senha<input id="np" type="password" autocomplete="new-password"></label><div class="err">${esc(loginMsg)}</div><button class="btn" data-act="newpw">Salvar nova senha</button></div></div>`}
+function vLogin(){return`<div class="login"><div class="scene">${scene()}</div><div class="box f" style="margin-top:14px"><h1>meu cantinho</h1><p class="sm" style="margin:0">Entre pra seus hábitos ficarem salvos e iguais no PC e no celular.</p><button class="btn gg" data-act="google">Entrar com Google</button><div class="sm" style="text-align:center">ou com e-mail</div><label>E-mail<input id="em" type="email" autocomplete="email" value="${esc(loginEmail)}"></label><label>Senha (mínimo 6 caracteres)<input id="pw" type="password" autocomplete="current-password"></label><div class="err" id="err">${esc(loginMsg)}</div><button class="btn" data-act="in">Entrar</button><button class="btn g" data-act="up">Criar conta</button><a href="#" data-act="forgot" style="color:var(--lamp);font-size:14px;text-align:center">Esqueci minha senha</a><a href="#" data-act="local" style="color:var(--soft);font-size:13px;text-align:center">Usar só neste aparelho</a></div></div>`}
+function phase(){const h=new Date().getHours()+new Date().getMinutes()/60;return h<5||h>=19?'n':h<7?'a':h<17?'d':'s'}
+function sky(W){const h=new Date().getHours()+new Date().getMinutes()/60,p=phase(),C={n:'#1d1410',a:'#b8734a',d:'#e3c488',s:'#8a3b24'};let o=`<rect width="${W}" height="280" fill="${C[p]}"/>`;
+  if(p!=='n'){const t=Math.min(1,Math.max(0,(h-5)/14)),x=40+t*(W-80),y=200-Math.sin(t*Math.PI)*150;o+=`<circle cx="${x}" cy="${y}" r="26" fill="#F2B544" opacity=".25"/><circle cx="${x}" cy="${y}" r="16" fill="#F2B544" stroke="#120b06" stroke-width="2"/>`;
+    if(p==='d')o+=[0,1,2].map(i=>`<g class="cloud" style="animation-delay:-${i*30}s"><ellipse cx="0" cy="${70+i*34}" rx="34" ry="11" fill="#F5E6C8" opacity=".75"/><ellipse cx="18" cy="${64+i*34}" rx="20" ry="9" fill="#F5E6C8" opacity=".75"/></g>`).join('')}
+  else{o+=`<circle cx="${W*.3}" cy="80" r="20" fill="#F5E6C8"/><circle cx="${W*.3+9}" cy="74" r="18" fill="${C.n}"/>`;for(let i=0;i<16;i++)o+=`<circle class="tw" style="animation-delay:-${i*.3}s" cx="${(i*97+31)%W}" cy="${20+(i*53)%110}" r="${i%3?1.3:2}" fill="#F5E6C8"/>`}
+  return o}
+const PL=[['samambaia','Samambaia'],['cacto','Cacto'],['girassol','Girassol'],['flor','Flor']],CO=[['#4F7A3A','Verde folha'],['#C8302B','Vermelho tattoo'],['#F2B544','Amarelo luz'],['#7B4FA3','Roxo']],GO=[[7,'Todo dia'],[6,'6x por semana'],[5,'5x por semana'],[4,'4x por semana'],[3,'3x por semana'],[2,'2x por semana'],[1,'1x por semana']];
+function ovEdit(){const h=D.habits.find(x=>x.id===editId);if(!h)return'';const op=(a,v)=>a.map(x=>`<option value="${x[0]}" ${x[0]==v?'selected':''}>${x[1]}</option>`).join('');
+  return`<div class="ov"><div class="mod box f"><h2 style="margin:0">editar hábito</h2><label>Nome<input id="en" maxlength="40" value="${esc(h.name)}"></label><div class="r2"><label>Planta<select id="et">${op(PL,h.type)}</select></label><label>Cor<select id="ec">${op(CO,h.color)}</select></label><label>Meta<select id="eg">${op(GO,h.goal)}</select></label></div><button class="btn" data-act="hsave">Salvar</button><button class="btn g" data-act="hclose">Cancelar</button></div></div>`}
+const STARTERS=[['Beber água','samambaia','#4F7A3A',7],['Treinar','cacto','#C8302B',4],['Ler 20 min','girassol','#F2B544',7],['Dormir cedo','flor','#7B4FA3',7],['Meditar','samambaia','#4F7A3A',5],['Estudar','girassol','#F2B544',5]];
+let ob=null,obTour=false,obPick=[true,true,true,false,false,false];
+function ovTut(){const st=(obTour?[0,2]:[0,1,2])[ob],last=ob===(obTour?1:2);let b='';
+  if(st===0)b=`<div style="font-size:56px;text-align:center">😺</div><h2 style="margin:0;text-align:center">bem-vinda ao seu cantinho</h2><p>Aqui seus hábitos viram plantinhas numa sacada com luz amarela. Quanto mais você cuida, mais elas crescem, e o gato aprova.</p>`;
+  else if(st===1)b=`<h2 style="margin:0">planta os primeiros hábitos</h2><p class="sm">Escolha os que quiser. Dá pra mudar tudo depois.</p>${STARTERS.map((x,i)=>`<label class="chk"><input type="checkbox" class="pk" data-i="${i}" ${obPick[i]?'checked':''}> ${x[0]} <span class="sm">${x[3]===7?'todo dia':x[3]+'x por semana'}</span></label>`).join('')}`;
+  else b=`<h2 style="margin:0">como funciona</h2><p>🌱 Toque em <b>marcar hoje</b> todo dia que cumprir um hábito.<br>🪴 As plantas crescem no <b>Jardim</b>.<br>🏷️ Sequências rendem <b>adesivos</b>.<br>✏️ No <b>Diário</b> você registra o humor do dia.<br>☁️ Tudo fica salvo na sua conta.</p>`;
+  return`<div class="ov"><div class="mod box f">${b}<div class="r2">${ob>0?'<button class="btn g" data-act="obback">Voltar</button>':''}<button class="btn" data-act="obnext">${last?'Começar':'Próximo'}</button></div><a href="#" data-act="obskip" class="sm" style="text-align:center;color:var(--soft)">Pular tutorial</a></div></div>`}
+function finishOb(){if(!obTour)STARTERS.forEach((x,i)=>{if(obPick[i])D.habits.push({id:'h'+Date.now().toString(36)+i,name:x[0],type:x[1],color:x[2],goal:x[3],done:{}})});D.onboarded=true;ob=null;obTour=false;save();animNext=true;render()}
+function exportData(){const b=new Blob([JSON.stringify(D,null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='cantinho-backup-'+key(new Date())+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function rr(g,x,y,w,h,r){g.beginPath();g.roundRect?g.roundRect(x,y,w,h,r):g.rect(x,y,w,h);g.fill()}
+async function makeSum(kind){try{await document.fonts.load('40px Bungee');await document.fonts.load('700 30px Nunito')}catch(e){}
+  const hs=D.habits,now=new Date(),W=1080,H=1350,c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d'),days=[];
+  if(kind==='w'){for(let i=6;i>=0;i--)days.push(addDays(now,-i))}else{for(let d=new Date(now.getFullYear(),now.getMonth(),1);d<=now;d=addDays(d,1))days.push(new Date(d))}
+  const ks=days.map(key),per=kind==='w'?'últimos 7 dias':now.toLocaleDateString('pt-BR',{month:'long',year:'numeric'}),cnt=h=>ks.filter(k=>h.done[k]).length,tot=hs.reduce((a,h)=>a+cnt(h),0),perf=hs.length>1?ks.filter(k=>hs.every(h=>h.done[k])).length:0,exp=hs.reduce((a,h)=>a+Math.min(h.goal/7*days.length,days.length),0),pct=exp?Math.min(100,Math.round(tot/exp*100)):0;
+  g.fillStyle='#2B1D14';g.fillRect(0,0,W,H);const rg=g.createRadialGradient(W/2,0,40,W/2,0,720);rg.addColorStop(0,'rgba(242,181,68,.38)');rg.addColorStop(1,'rgba(242,181,68,0)');g.fillStyle=rg;g.fillRect(0,0,W,H);
+  g.textAlign='center';g.fillStyle='#F2B544';g.font='76px Bungee, Impact, sans-serif';g.fillText('meu cantinho',W/2,150);g.fillStyle='#D9C7A3';g.font='700 36px Nunito, sans-serif';g.fillText(per,W/2,208);
+  [[tot,'checks'],[pct+'%','da meta'],[perf,'dias perfeitos']].forEach((x,i)=>{const X=60+i*330;g.fillStyle='#3A2819';rr(g,X,250,300,170,24);g.strokeStyle='#6B4F33';g.lineWidth=4;g.stroke();g.fillStyle='#F2B544';g.font='64px Bungee, Impact, sans-serif';g.fillText(x[0],X+150,345);g.fillStyle='#D9C7A3';g.font='700 28px Nunito, sans-serif';g.fillText(x[1],X+150,395)});
+  const sz=kind==='w'?120:92,gp=14,x0=(W-(7*sz+6*gp))/2;let y=470;
+  days.forEach((d,i)=>{const k=key(d),f=hs.length?hs.filter(h=>h.done[k]).length/hs.length:0,X=x0+(i%7)*(sz+gp),Y=y+Math.floor(i/7)*(sz+gp+(kind==='w'?34:0));g.fillStyle=f===0?'#3A2819':f<.34?'#7a5a1c':f<.67?'#c58a2c':'#F2B544';rr(g,X,Y,sz,sz,16);if(kind==='w'){g.fillStyle='#D9C7A3';g.font='700 26px Nunito, sans-serif';g.fillText('DSTQQSS'[d.getDay()],X+sz/2,Y+sz+28)}});
+  y+=Math.ceil(days.length/7)*(sz+gp+(kind==='w'?34:0))+50;
+  hs.slice().sort((a,b)=>cnt(b)-cnt(a)).slice(0,5).forEach(h=>{if(y>H-230)return;g.textAlign='left';g.font='54px sans-serif';g.fillText(TYPES[h.type][stage(h)],70,y+40);g.fillStyle='#F5E6C8';g.font='700 36px Nunito, sans-serif';g.fillText(h.name.slice(0,22),150,y+22);g.textAlign='right';g.fillStyle='#D9C7A3';g.fillText(cnt(h)+'/'+days.length,W-70,y+22);g.fillStyle='#3A2819';rr(g,150,y+36,W-220,18,9);g.fillStyle=h.color;rr(g,150,y+36,Math.max(18,(W-220)*cnt(h)/days.length),18,9);y+=104});
+  g.textAlign='center';g.font='60px sans-serif';g.fillText(catState()[0],W/2,H-100);g.fillStyle='#D9C7A3';g.font='700 28px Nunito, sans-serif';g.fillText('nível '+(1+Math.floor(xp()/100))+' · feito com carinho',W/2,H-48);return c}
+function shareSum(){sumCanvas.toBlob(async b=>{const f=new File([b],'meu-cantinho.png',{type:'image/png'});if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],title:'meu cantinho'})}catch(e){}}else{const a=document.createElement('a');a.href=sumUrl;a.download='meu-cantinho.png';a.click()}},'image/png')}
+function ovSum(){return`<div class="ov"><div class="mod box f"><img src="${sumUrl}" alt="Resumo" style="width:100%;border-radius:10px"><button class="btn" data-act="share">Compartilhar</button><a class="btn g" href="${sumUrl}" download="meu-cantinho.png">Baixar imagem</a><button class="btn g" data-act="sumclose">Fechar</button></div></div>`}
+function render(){$('#app').className=animNext?'enter':'';animNext=false;if(recovering){$('#app').innerHTML=vReset();return}if(cloud&&!user&&!localOnly){$('#app').innerHTML=vLogin();return}if(ob===null&&!D.onboarded){ob=0;obTour=false}
   const c=catState(),x=xp(),lv=1+Math.floor(x/100),fill=Math.floor((x%100)/10);
   const V={hoje:vHoje,jardim:vJardim,mes:vMes,diario:vDiario,conq:vConq}[view](),
   tabs=[['hoje','☀️','Hoje'],['jardim','🪴','Jardim'],['mes','📅','Mês'],['diario','✏️','Diário'],['conq','🏷️','Adesivos']];
   $('#app').innerHTML=`<header><div><h1>meu cantinho</h1><div class="sm">${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div></div><div class="pill"><b>${c[0]}</b><div>${c[1]}<div class="xp" title="${x} XP">${Array.from({length:10},(_,i)=>`<i class="${i<fill?'f':''}" style="--k:${i}"></i>`).join('')}</div><span class="sm">nível ${lv}</span></div></div></header>${V}
   <p class="sm" style="margin-top:22px"><span id="sync">${cloud?(user?esc(syncMsg||'salvo na nuvem ✓'):'só neste aparelho'):'modo local (sem nuvem configurada)'}</span> ${cloud&&user?`· ${esc(user.email)} <a href="#" data-act="out" style="color:var(--lamp)">sair</a>`:''}${cloud&&!user?' · <a href="#" data-act="login" style="color:var(--lamp)">entrar</a>':''}</p>
-  <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>`}
+  <nav>${tabs.map(t=>`<button class="${view===t[0]?'a':''}" data-act="tab" data-v="${t[0]}"><span>${t[1]}</span>${t[2]}</button>`).join('')}</nav>${editId?ovEdit():''}${ob!==null?ovTut():''}${sumUrl?ovSum():''}`}
 
-async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value;if(!email||password.length<6){loginMsg='Preencha o e-mail e uma senha de 6+ caracteres.';return render()}
+async function auth(m){const email=$('#em').value.trim(),password=$('#pw').value;loginEmail=email;if(!email||password.length<6){loginMsg='Preencha o e-mail e uma senha de 6+ caracteres.';return render()}
   const r=m==='in'?await cloud.auth.signInWithPassword({email,password}):await cloud.auth.signUp({email,password});
   if(r.error){loginMsg=/Invalid login/i.test(r.error.message)?'E-mail ou senha incorretos.':r.error.message;return render()}
   if(m==='up'&&!r.data.session){loginMsg='Conta criada. Confirme o e-mail que você recebeu e depois entre.';render()}}
@@ -204,15 +270,32 @@ document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]
   else if(a==='jdel'){const d=b.dataset.d;if(confirm('Apagar a nota do dia '+d.split('-').reverse().join('/')+'?')){delete D.journal[d];if(jDate===d){jMood=null;jText=null}save();render()}}
   else if(a==='jtoday'){jDate=key(new Date());jMood=null;jText=null;render()}
   else if(a==='in'||a==='up')auth(a)
+  else if(a==='google')google()
+  else if(a==='forgot')forgot()
+  else if(a==='newpw')newpw()
+  else if(a==='hedit'){editId=b.dataset.id;render()}
+  else if(a==='hclose'){editId=null;render()}
+  else if(a==='hsave'){const h=D.habits.find(x=>x.id===editId),n=$('#en').value.trim();if(h&&n){h.name=n;h.type=$('#et').value;h.color=$('#ec').value;h.goal=+$('#eg').value;save()}editId=null;render()}
+  else if(a==='export')exportData()
+  else if(a==='import')$('#imp').click()
+  else if(a==='tour'){ob=0;obTour=true;render()}
+  else if(a==='obnext'){const n=obTour?2:3;if(ob<n-1){ob++;render()}else finishOb()}
+  else if(a==='obback'){ob--;render()}
+  else if(a==='obskip'){D.onboarded=true;ob=null;obTour=false;save();render()}
+  else if(a==='sum'){sumCanvas=await makeSum(b.dataset.k);sumUrl=sumCanvas.toDataURL('image/png');render()}
+  else if(a==='sumclose'){sumUrl=null;sumCanvas=null;render()}
+  else if(a==='share')shareSum()
   else if(a==='local'){localStorage.setItem('cantinho-local','1');localOnly=true;render()}
   else if(a==='login'){localStorage.removeItem('cantinho-local');localOnly=false;render()}
   else if(a==='out'){await cloud.auth.signOut();user=null;localOnly=false;localStorage.removeItem('cantinho-local');localStorage.removeItem(LS);D=norm({});render()}});
 document.addEventListener('submit',e=>{if(e.target.id!=='nf')return;e.preventDefault();const n=$('#fn').value.trim();if(!n)return;
   D.habits.push({id:'h'+Date.now().toString(36)+Math.random().toString(36).slice(2,5),name:n,type:$('#ft').value,color:$('#fc').value,goal:+$('#fg').value,done:{}});save();render()});
-document.addEventListener('change',e=>{if(e.target.id==='hmsel'){hmH=e.target.value;render()}});
+document.addEventListener('change',e=>{const t=e.target;if(t.id==='hmsel'){hmH=t.value;render()}
+  if(t.classList.contains('pk'))obPick[+t.dataset.i]=t.checked;
+  if(t.id==='imp'&&t.files[0]){const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!Array.isArray(o.habits))throw 0;if(confirm('Substituir seus dados atuais pelo backup?')){D=norm(o);D.onboarded=true;save();animNext=true;render()}}catch(x){alert('Esse arquivo não parece um backup do cantinho.')}t.value=''};rd.readAsText(t.files[0])}});
 
 (async()=>{if(cloud){const{data}=await cloud.auth.getSession();user=data.session?data.session.user:null;
-  cloud.auth.onAuthStateChange((_e,s)=>{const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;if(u){loginMsg='';pull().then(()=>{animNext=true;render()})}else render()}});
+  cloud.auth.onAuthStateChange((_e,s)=>{if(_e==='PASSWORD_RECOVERY'){recovering=true;render()}const u=s?s.user:null;if((u&&u.id)!==(user&&user.id)){user=u;if(u){loginMsg='';pull().then(()=>{animNext=true;render()})}else render()}});
   if(user)await pull()}render();setInterval(()=>{if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='TEXTAREA')render()},60000)})();
 </script>
 </body>
